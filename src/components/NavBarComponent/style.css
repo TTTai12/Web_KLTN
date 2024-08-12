@@ -1,0 +1,16 @@
+.category {
+  line-height: 1.5;
+}
+
+.category-item {
+  position: relative;
+  padding: 10px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.category-item:hover {
+  transform: translateY(-5px);
+  background-color: rgb(194, 194, 196);
+  color: rgb(56, 56, 61);
+}
