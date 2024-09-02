@@ -15,7 +15,44 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../../components/LoadingComponent/Loading";
 import { useSelector } from "react-redux";
 import { useDebounce } from "../../hooks/useDebounce";
+import FooterComponent from "../../components/FooterComponent/FooterComponent";
+// links này là cho Footer
+const supportLinks = [
+  { href: "https://example.com/link1", text: "Hotline" },
+  { href: "https://example.com/link2", text: "Các câu hỏi thường gặp" },
+  { href: "https://example.com/link2", text: "Gửi yêu cầu hỗ trợ" },
+  { href: "https://example.com/link2", text: "Hướng dẫn đặt hàng" },
+  { href: "https://example.com/link2", text: "Phương thức vận chuyển" },
+  { href: "https://example.com/link2", text: "Chính sách đổi trả" },
+  { href: "mailto:tientantai12@gmail.com", text: "Báo lỗi bảo mật " },
+  { href: "https://example.com/link2", text: "Hướng dẫn trả góp" },
+];
 
+const StoreLinks = [
+  { href: "https://example.com/tiki1", text: "Giới thiệu NhânTàiStore" },
+  { href: "https://example.com/tiki2", text: "NhânTàiStore Blog" },
+  { href: "https://example.com/tiki2", text: "Tuyển dụng" },
+  { href: "https://example.com/tiki2", text: "Chính sách bảo mật thanh toán" },
+  {
+    href: "https://example.com/tiki2",
+    text: "Chính sách bảo mật thông tin cá nhân",
+  },
+  {
+    href: "https://example.com/tiki2",
+    text: "Chính sách giải quyết khiếu nại",
+  },
+  {
+    href: "https://example.com/tiki2",
+    text: "Tiếp thị liên kết cùng NhânTàiStore",
+  },
+  { href: "https://example.com/tiki2", text: "Bán hàng doanh nghiệp" },
+  { href: "https://example.com/tiki2", text: "Điều kiện vận chuyển" },
+];
+
+const CooperationLinks = [
+  { href: "https://example.com/tiki1", text: "Quy chế hoạt động sàn GDTMDT" },
+  { href: "https://example.com/tiki2", text: "Bán hàng cùng NhânTàiStore" },
+];
 
 const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
@@ -135,6 +172,12 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+      <FooterComponent
+        supportLinks={supportLinks}
+        StoreLinks={StoreLinks}
+        CooperationLinks={CooperationLinks}
+      />
     </Loading>
   );
 };
