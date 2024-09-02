@@ -167,7 +167,7 @@ const HomePage = () => {
                 products?.totalPage === 1
               }
               styleTextButton={{ fontWeight: 500 }}
-              onClick={() => setLimit((prev) => prev + 6)}
+              onClick={() => setLimit((prev) => prev + 8)}
             />
           </div>
         </div>

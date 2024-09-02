@@ -100,14 +100,13 @@ const deleteMany = async (req, res) => {
 const getAllProduct = async (req, res) => {
     try {
         const { limit, page, sort, filter } = req.query;
-
         // Kiểm tra nếu không có limit và page thì sẽ lấy tất cả sản phẩm
-        const isPagination = limit !== undefined && page !== undefined;
+        const isPagination = limit !== undefined;
 
         let response;
         if (isPagination) {
             // Nếu có limit và page thì lấy sản phẩm theo phân trang
-            response = await ProductService.getAllProduct(Number(limit) || 12, Number(page) || 0, sort, filter);
+            response = await ProductService.getAllProduct(Number(limit) , Number(page) , sort, filter);
         } else {
             // Nếu không có limit và page thì lấy tất cả sản phẩm
             response = await ProductService.getAllProduct(null, null, sort, filter);
