@@ -8,13 +8,13 @@ const NavBarComponent = () => {
   const onChange = () => {};
 
   const images = [
-    "https://salt.tikicdn.com/cache/100x100/ts/category/54/c0/ff/fe98a4afa2d3e5142dc8096addc4e40b.png.webp",
-    "https://salt.tikicdn.com/cache/100x100/ts/category/8b/d4/a8/5924758b5c36f3b1c43b6843f52d6dd2.png.webp",
-    "https://salt.tikicdn.com/cache/100x100/ts/category/92/b5/c0/3ffdb7dbfafd5f8330783e1df20747f6.png.webp",
-    "https://salt.tikicdn.com/cache/100x100/ts/category/2d/7c/45/e4976f3fa4061ab310c11d2a1b759e5b.png.webp",
-    "https://salt.tikicdn.com/cache/100x100/ts/category/61/d4/ea/e6ea3ffc1fcde3b6224d2bb691ea16a2.png.webp",
-    "https://salt.tikicdn.com/cache/100x100/ts/category/61/d4/ea/e6ea3ffc1fcde3b6224d2bb691ea16a2.png.webp",
-    "https://salt.tikicdn.com/cache/100x100/ts/category/61/d4/ea/e6ea3ffc1fcde3b6224d2bb691ea16a2.png.webp",
+    "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/MU2G3?wid=890&hei=890&fmt=jpeg&qlt=90&.v=1693236163178",
+    "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/HPBJ2?wid=890&hei=890&fmt=jpeg&qlt=90&.v=1601575259000",
+    "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/HQ5Z2?wid=890&hei=890&fmt=jpeg&qlt=90&.v=1661963682947",
+    "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/MUW23?wid=890&hei=890&fmt=jpeg&qlt=90&.v=1712255585028",
+    "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/MT0N3?wid=890&hei=890&fmt=jpeg&qlt=90&.v=1692999418841",
+    "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/MK0Q3?wid=890&hei=890&fmt=jpeg&qlt=90&.v=1646446502407",
+    "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/MU7V2?wid=532&hei=582&fmt=png-alpha&.v=1542406861289",
   ];
 
   const renderContent = (type, options) => {
@@ -78,6 +78,7 @@ const NavBarComponent = () => {
             "Tai Nghe",
             "Ốp Lưng",
             "TIVI",
+            "Bộ Sạc",
           ])}
         </div>
       </WrapperContent>
