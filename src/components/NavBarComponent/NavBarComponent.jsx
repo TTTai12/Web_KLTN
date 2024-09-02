@@ -68,7 +68,7 @@ const NavBarComponent = () => {
 
   return (
     <div style={{ backgroundColor: "rgb(255, 255, 255)", marginRight: "15px" }}>
-      <WrapperLableText>Danh mục sản phẩm</WrapperLableText>
+      <WrapperLabelText>Danh mục sản phẩm</WrapperLabelText>
       <WrapperContent>
         <div className="category">
           {renderContent("text", [

@@ -2,10 +2,12 @@
 import styled from "styled-components";
 
 export const InformationContainer = styled.div`
-  border: 1px solid #ccc;
-  padding: 20px;
+  width: 100%;  // Thêm width để full màn hình
+  padding: 20px; // Giữ padding để nội dung không dính sát vào cạnh
   display: flex;
   justify-content: space-between;
+  box-sizing: border-box; // Đảm bảo padding không ảnh hưởng đến tổng chiều rộng
+  background-color: #f8f9fa; // Thêm màu nền (nếu muốn)
 `;
 // justify-content: space-between;
 export const Title = styled.h3`
