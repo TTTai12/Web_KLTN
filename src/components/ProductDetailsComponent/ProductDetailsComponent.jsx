@@ -9,8 +9,10 @@ import {
   WrapperQualityProduct,
   WrapperInputNumber,
   WrapperDescriptionProduct,
+  DropdownContent,
+  DropdownToggle
 } from "./style";
-import { MinusOutlined, PlusOutlined, StarFilled } from "@ant-design/icons";
+import { MinusOutlined, PlusOutlined, StarFilled, DownOutlined, UpOutlined } from "@ant-design/icons";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import * as ProductService from "../../services/ProductService";
 import { useQuery } from "@tanstack/react-query";
@@ -22,6 +24,7 @@ import { addOrderProduct } from "../../redux/slides/orderSlide";
 
 const ProductDetailsComponent = ({ idProduct }) => {
   const [numProduct, setNumProduct] = useState(1);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const user = useSelector((state) => state.user);
   const product = useSelector((state) => state.product);
   const order = useSelector((state) => state.order);
@@ -81,7 +84,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
         setErrorLimitOrder(true);
       }
     }
-  }
+  };
+
   const fetchGetRelatedProducts = async (context) => {
     const id = context?.queryKey && context?.queryKey[1];
     if (id) {
@@ -134,7 +138,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
                 <PlusOutlined style={{ color: '#000', fontSize: '20px' }} />
               </button>
             </WrapperQualityProduct>
-            
           </div>
           <div
             style={{
@@ -142,16 +145,23 @@ const ProductDetailsComponent = ({ idProduct }) => {
               padding: "10px 0",
               borderTop: "1px solid #e5e5e5",
               borderBottom: "1px solid #e5e5e5",
+              position: 'relative'
             }}
           >
-            <div style={{ marginBottom: "10px" , fontSize:'20px',color: 'rgb(39, 39, 42)'}}>Đặc điểm nổi bật</div>
-            <WrapperDescriptionProduct>
-            <div>
-              <Image style={{ width: '16px', height: '16px' }} src="https://salt.tikicdn.com/ts/upload/81/61/d4/92e63f173e7983b86492be159fe0cff4.png" alt="blue-check" />
-              <span className="description">{productDetails?.description}</span>
+            <div style={{ marginBottom: "10px" , fontSize:'20px',color: 'rgb(39, 39, 42)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              Thông tin sản phẩm
+              <DropdownToggle onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                {isDropdownOpen ? <UpOutlined /> : <DownOutlined />}
+              </DropdownToggle>
             </div>
-            </WrapperDescriptionProduct>
-            
+            <DropdownContent isOpen={isDropdownOpen}>
+              <WrapperDescriptionProduct>
+                <div>
+                  <Image style={{ width: '16px', height: '16px',  marginRight: '8px',  }} src="https://salt.tikicdn.com/ts/upload/81/61/d4/92e63f173e7983b86492be159fe0cff4.png" alt="blue-check" />
+                  <span className="description">{productDetails?.description}</span>
+                </div>
+              </WrapperDescriptionProduct>
+            </DropdownContent>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <ButtonComponent
@@ -181,7 +191,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
             ></ButtonComponent>
           </div>
         </Col>
-        </Row>
+      </Row>
       <Row style={{ padding: '16px', background: '#fff', borderRadius: '4px', marginTop: '16px' }}>
         <h2>Sản phẩm tương tự</h2>
         {isRelatedLoading ? (
