@@ -1,5 +1,5 @@
 import React from "react";
-import { WrapperContent, WrapperLableText, WrapperTextPrice } from "./style";
+import { WrapperContent, WrapperLabelText, WrapperTextPrice } from "./style";
 import TypeProductNavbar from "../TypeProductNavbar/TypeProductNavbar";
 import { Checkbox, Rate } from "antd";
 import "./style.css";

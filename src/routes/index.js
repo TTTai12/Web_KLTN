@@ -9,6 +9,10 @@ import ProductDetailsPage from "../pages/ProductDetailsPage/ProductDetailsPage";
 import ProfilePage from "../pages/Profile/ProfilePage";
 import AdminPage from "../pages/AdminPage/AdminPage";
 import OrderPage from "../pages/OrderPage/OrderPage";
+import PaymentPage from "../pages/PaymentPage/PaymentPage";
+import OrderSuccess from "../pages/OrderSuccess/OrderSuccess";
+
+
 
 export const routes = [
   {
@@ -22,15 +26,25 @@ export const routes = [
     isShowHeader: true,
   },
   {
+    path: "/orderSuccess",
+    page: OrderSuccess,
+    isShowHeader: true,
+  },
+  {
+    path: "/payment",
+    page: PaymentPage,
+    isShowHeader: true,
+  },
+  {
     path: "/products",
     page: ProductsPage,
     isShowHeader: true,
   },
   {
-    path: '/product/:type',
+    path: "/product/:type",
     page: TypeProductPage,
-    isShowHeader: true
-},
+    isShowHeader: true,
+  },
   {
     path: "/sign-in",
     page: SignInPage,
@@ -47,16 +61,16 @@ export const routes = [
     isShowHeader: true,
   },
   {
-    path: '/profile-user',
+    path: "/profile-user",
     page: ProfilePage,
-    isShowHeader: true
-},
-{
-  path: '/system/admin',
-  page: AdminPage,
-  isShowHeader: false,
-  isPrivated: true
-},
+    isShowHeader: true,
+  },
+  {
+    path: "/system/admin",
+    page: AdminPage,
+    isShowHeader: false,
+    isPrivated: true,
+  },
   {
     path: "*",
     page: NotFoundPage,
