@@ -13,7 +13,7 @@ export const WrapperStyleHeader = styled.div`
     font-size: 13px;
   }
 `
-export const WrapperStyleHeaderDilivery = styled.div`
+export const WrapperStyleHeaderDelivery = styled.div`
   background: rgb(255, 255, 255);
   padding: 9px 16px;
   border-radius: 4px;
@@ -64,6 +64,7 @@ export const WrapperRight = styled.div`
   flex-direction: column; 
   gap: 10px; 
   align-items: center
+  
 `
 
 export const WrapperInfo = styled.div`

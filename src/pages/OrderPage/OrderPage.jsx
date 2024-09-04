@@ -9,7 +9,7 @@ import {
   WrapperListOrder,
   WrapperRight,
   WrapperStyleHeader,
-  WrapperStyleHeaderDilivery,
+  WrapperStyleHeaderDelivery,
   WrapperTotal,
 } from "./style";
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
@@ -134,14 +134,16 @@ const OrderPage = () => {
   }, [order]);
 
   const deliveryPriceMemo = useMemo(() => {
-    if (priceMemo < 200000) {
-      return 20000;
-    } else if (priceMemo >= 200000 && priceMemo < 500000) {
-      return 10000;
-    } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
-      return 0;
-    } 
-  }, [priceMemo]);
+    if (priceMemo > 500000) {
+        return 0; // Miễn phí vận chuyển cho đơn hàng từ 500k trở lên
+    } else if (priceMemo > 200000) {
+        return 10000; // Phí vận chuyển 10k cho đơn hàng từ 200k1 đến 500k
+    } else if (priceMemo > 0) {
+        return 20000; // Phí vận chuyển 20k cho đơn hàng 200k trở xuống
+    } else {
+        return 0; // Miễn phí vận chuyển nếu không mua hàng
+    }
+}, [priceMemo]);
 
   const totalPriceMemo = useMemo(() => {
     return (
@@ -225,7 +227,7 @@ const OrderPage = () => {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <WrapperLeft>
             <h4>Phí giao hàng</h4>
-            <WrapperStyleHeaderDilivery>
+            <WrapperStyleHeaderDelivery>
               <StepComponent
                 items={itemsDelivery}
                 current={
@@ -238,7 +240,7 @@ const OrderPage = () => {
                     : 3
                 }
               />
-            </WrapperStyleHeaderDilivery>
+            </WrapperStyleHeaderDelivery>
             <WrapperStyleHeader>
               <span style={{ display: "inline-block", width: "390px" }}>
                 <CustomCheckbox
@@ -379,7 +381,7 @@ const OrderPage = () => {
             </WrapperListOrder>
           </WrapperLeft>
           <WrapperRight>
-            <div style={{ width: "100%" }}>
+            <div style={{ width: "100%" ,marginTop: "60px"}}>
               <WrapperInfo>
                 <div>
                   <span>Địa chỉ: </span>

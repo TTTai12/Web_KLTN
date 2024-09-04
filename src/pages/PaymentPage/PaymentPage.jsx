@@ -7,6 +7,7 @@ import {
   WrapperRadio,
   WrapperRight,
   WrapperTotal,
+  WrapperStyleHeaderDelivery,
 } from "./style";
 
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
@@ -85,13 +86,13 @@ const PaymentPage = () => {
   }, [order]);
 
   const deliveryPriceMemo = useMemo(() => {
-    if (priceMemo < 200000) {
-      return 20000;
-    } else if (priceMemo >= 200000 && priceMemo < 500000) {
+    if (priceMemo > 200000) {
       return 10000;
-    } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
+    } else if (priceMemo === 0) {
       return 0;
-    } 
+    } else {
+      return 20000;
+    }
   }, [priceMemo]);
 
   const totalPriceMemo = useMemo(() => {
@@ -231,32 +232,31 @@ const PaymentPage = () => {
   return (
     <div style={{ background: "#f5f5fa", with: "100%", height: "100vh" }}>
       <Loading isPending={isPendingAddOrder}>
-        <div style={{ height: "100%", width: "1270px", margin: "0 auto" }}>
+        <div style={{ height: "100%", width: "1000px", margin: "0 auto" }}>
           <h3>Thanh toán</h3>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <WrapperLeft>
-              <WrapperInfo>
                 <div>
-                  <Label>Chọn phương thức giao hàng</Label>
+                  <Label style={{ color: "#ea8500", fontWeight: "bold", fontSize: "20px",}} > Chọn phương thức giao hàng</Label>
                   <WrapperRadio onChange={handleDelivery} value={delivery}>
                     <Radio value="fast">
-                      <span style={{ color: "#ea8500", fontWeight: "bold" }}>
-                        FAST
+                      <span style={{ color: "#ea8500", fontWeight: "bold", }}>
+                        GARB
                       </span>{" "}
-                      Giao hàng tiết kiệm
+                      Giao nhanh 4h
                     </Radio>
                     <Radio value="gojek">
                       <span style={{ color: "#ea8500", fontWeight: "bold" }}>
-                        GO_JEK
+                        GO
                       </span>{" "}
                       Giao hàng tiết kiệm
                     </Radio>
                   </WrapperRadio>
                 </div>
-              </WrapperInfo>
-              <WrapperInfo>
+              
+              
                 <div>
-                  <Label>Chọn phương thức thanh toán</Label>
+                  <Label style={{ color: "#ea8500", fontWeight: "bold", fontSize: "20px",}} >Chọn phương thức thanh toán</Label>
                   <WrapperRadio onChange={handlePayment} value={payment}>
                     <Radio value="later_money">
                       {" "}
@@ -265,14 +265,14 @@ const PaymentPage = () => {
                     <Radio value="paypal"> Thanh toán tiền bằng paypal</Radio>
                   </WrapperRadio>
                 </div>
-              </WrapperInfo>
+              
             </WrapperLeft>
             <WrapperRight>
-              <div style={{ width: "100%" }}>
+              <div style={{ width: "100%",fontSize: "20px", }}>
                 <WrapperInfo>
                   <div>
                     <span>Địa chỉ: </span>
-                    <span style={{ fontWeight: "bold" }}>
+                    <span style={{ fontWeight: "bold",fontSize: "20px", }}>
                       {`${user?.address} ${user?.city}`}{" "}
                     </span>
                     <span
@@ -358,15 +358,7 @@ const PaymentPage = () => {
                 </WrapperTotal>
               </div>
               {payment === "paypal" && sdkReady ? (
-                <div style={{ width: "320px" }}>
-                  {/* <PayPalButton
-                    amount={Math.round(totalPriceMemo / 30000)}
-                    // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-                    onSuccess={onSuccessPaypal}
-                    onError={() => {
-                      alert("Erroe");
-                    }}
-                  /> */}
+                <div>
                 </div>
               ) : (
                 <ButtonComponent
