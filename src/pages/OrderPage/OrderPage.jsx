@@ -124,7 +124,8 @@ const OrderPage = () => {
   const priceDiscountMemo = useMemo(() => {
     const result = order?.orderItemsSelected?.reduce((total, cur) => {
       const totalDiscount = cur.discount ? cur.discount : 0;
-      return total + (priceMemo * (totalDiscount * cur.amount)) / 100;
+      const discountPerItem = (cur.price * totalDiscount) / 100; // Tính giảm giá cho mỗi đơn vị sản phẩm
+      return total + discountPerItem * cur.amount; // Nhân giảm giá cho từng đơn vị sản phẩm với số lượng
     }, 0);
     if (Number(result)) {
       return result;
@@ -132,21 +133,21 @@ const OrderPage = () => {
     return 0;
   }, [order]);
 
-  const diliveryPriceMemo = useMemo(() => {
-    if (priceMemo >= 20000 && priceMemo < 500000) {
+  const deliveryPriceMemo = useMemo(() => {
+    if (priceMemo < 200000) {
+      return 20000;
+    } else if (priceMemo >= 200000 && priceMemo < 500000) {
       return 10000;
     } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
       return 0;
-    } else {
-      return 20000;
-    }
+    } 
   }, [priceMemo]);
 
   const totalPriceMemo = useMemo(() => {
     return (
-      Number(priceMemo) - Number(priceDiscountMemo) + Number(diliveryPriceMemo)
+      Number(priceMemo) - Number(priceDiscountMemo) + Number(deliveryPriceMemo)
     );
-  }, [priceMemo, priceDiscountMemo, diliveryPriceMemo]);
+  }, [priceMemo, priceDiscountMemo, deliveryPriceMemo]);
 
   const handleRemoveAllOrder = () => {
     if (listChecked?.length > 1) {
@@ -228,9 +229,9 @@ const OrderPage = () => {
               <StepComponent
                 items={itemsDelivery}
                 current={
-                  diliveryPriceMemo === 10000
+                  deliveryPriceMemo === 10000
                     ? 2
-                    : diliveryPriceMemo === 20000
+                    : deliveryPriceMemo === 20000
                     ? 1
                     : order.orderItemsSelected.length === 0
                     ? 0
@@ -445,7 +446,7 @@ const OrderPage = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    {convertPrice(diliveryPriceMemo)}
+                    {convertPrice(deliveryPriceMemo)}
                   </span>
                 </div>
               </WrapperInfo>

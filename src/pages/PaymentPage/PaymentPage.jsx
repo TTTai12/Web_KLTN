@@ -73,9 +73,10 @@ const PaymentPage = () => {
   }, [order]);
 
   const priceDiscountMemo = useMemo(() => {
-    const result = order?.orderItemsSlected?.reduce((total, cur) => {
+    const result = order?.orderItemsSelected?.reduce((total, cur) => {
       const totalDiscount = cur.discount ? cur.discount : 0;
-      return total + (priceMemo * (totalDiscount * cur.amount)) / 100;
+      const discountPerItem = (cur.price * totalDiscount) / 100; // Tính giảm giá cho mỗi đơn vị sản phẩm
+      return total + discountPerItem * cur.amount; // Nhân giảm giá cho từng đơn vị sản phẩm với số lượng
     }, 0);
     if (Number(result)) {
       return result;
@@ -84,13 +85,13 @@ const PaymentPage = () => {
   }, [order]);
 
   const deliveryPriceMemo = useMemo(() => {
-    if (priceMemo > 200000) {
-      return 10000;
-    } else if (priceMemo === 0) {
-      return 0;
-    } else {
+    if (priceMemo < 200000) {
       return 20000;
-    }
+    } else if (priceMemo >= 200000 && priceMemo < 500000) {
+      return 10000;
+    } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
+      return 0;
+    } 
   }, [priceMemo]);
 
   const totalPriceMemo = useMemo(() => {
@@ -358,14 +359,14 @@ const PaymentPage = () => {
               </div>
               {payment === "paypal" && sdkReady ? (
                 <div style={{ width: "320px" }}>
-                  <PayPalButton
+                  {/* <PayPalButton
                     amount={Math.round(totalPriceMemo / 30000)}
                     // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                     onSuccess={onSuccessPaypal}
                     onError={() => {
                       alert("Erroe");
                     }}
-                  />
+                  /> */}
                 </div>
               ) : (
                 <ButtonComponent

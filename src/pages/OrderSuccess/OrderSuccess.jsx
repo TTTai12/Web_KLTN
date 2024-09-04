@@ -1,5 +1,5 @@
 import React from 'react'
-import { Label, WrapperInfo, WrapperContainer, WrapperValue, WrapperCountOrder, WrapperItemOrder, WrapperItemOrderInfo } from './style';
+import { Label, WrapperInfo, WrapperContainer, WrapperValue, WrapperCountOrder, WrapperItemOrder, WrapperItemOrderInfo, WrapperItemPrice  } from './style';
 import Loading from '../../components/LoadingComponent/Loading';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -39,29 +39,33 @@ const OrderSuccess = () => {
                 {state.orders?.map((order) => {
                   return (
                     <WrapperItemOrder key={order?.name}>
-                      <div style={{width: '500px', display: 'flex', alignItems: 'center', gap: 4}}> 
-                        <img src={order.image} style={{width: '77px', height: '79px', objectFit: 'cover'}}/>
+                      <div style={{width: '900px', display: 'flex', alignItems: 'center', gap: 40}}> 
+                        <img src={order.image} style={{width: '100px', height: '100px', objectFit: 'cover'}}/>
                         <div style={{
                           width: 260,
                           overflow: 'hidden',
                           textOverflow:'ellipsis',
-                          whiteSpace:'nowrap'
+                          whiteSpace:'nowrap',
+                          fontSize: 20,
                         }}>{order?.name}</div>
                       </div>
                       <div style={{flex: 1, display: 'flex', alignItems: 'center',gap: '10px'}}>
                         <span>
-                          <span style={{ fontSize: '13px', color: '#242424' }}>Giá tiền: {convertPrice(order?.price)}</span>
+                          <span style={{ fontSize: '20px', color: '#242424' }}>Số lượng: {order?.amount}</span>
                         </span>
                         <span>
-                          <span style={{ fontSize: '13px', color: '#242424' }}>Số lượng: {order?.amount}</span>
+                          <span style={{ fontSize: '20px', color: '#242424' }}>Giá tiền: {convertPrice(order?.price)}</span>
                         </span>
+                        
                       </div>
                     </WrapperItemOrder>
                   )
                 })}
               </WrapperItemOrderInfo>
               <div>
-                <span style={{ fontSize: '16px', color: 'red' }}>Tổng tiền: {convertPrice(state?.totalPriceMemo)}</span>
+                <WrapperItemPrice>
+                  Tổng tiền: {convertPrice(state?.totalPriceMemo)}
+                </WrapperItemPrice>
               </div>
             </WrapperContainer>
           </div>
