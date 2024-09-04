@@ -11,6 +11,7 @@ const OrderSuccess = () => {
   const location = useLocation()
   const {state} = location
   console.log('location', location)
+
   return (
     <div style={{ background: "#f5f5fa", with: "100%", height: "100vh" }}>
       <Loading isPending={false}>
