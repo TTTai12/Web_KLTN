@@ -20,7 +20,7 @@ const AdminProduct = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rowSelected, setRowSelected] = useState('')
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
-  const [isPendingUpdate, setisPendingUpdate] = useState(false)
+  const [isPendingUpdate, setIsPendingUpdate] = useState(false)
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false)
   const user = useSelector((state) => state?.user)
   const searchInput = useRef(null);
@@ -118,7 +118,7 @@ const AdminProduct = () => {
         discount: res?.data?.discount
       })
     }
-    setisPendingUpdate(false)
+    setIsPendingUpdate(false)
   }
 
   useEffect(() => {
@@ -131,7 +131,7 @@ const AdminProduct = () => {
 
   useEffect(() => {
     if (rowSelected && isOpenDrawer) {
-      setisPendingUpdate(true)
+      setIsPendingUpdate(true)
       fetchGetDetailsProduct(rowSelected)
     }
   }, [rowSelected, isOpenDrawer])

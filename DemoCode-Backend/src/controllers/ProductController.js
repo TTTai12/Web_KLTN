@@ -99,15 +99,25 @@ const deleteMany = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-        const { limit, page, sort, filter }= req.query
-        const response = await ProductService.getAllProduct(Number(limit) || 8 , Number(page) || 0, sort, filter)
-        return res.status(200).json(response)
+        const { limit, page, sort, filter } = req.query;
+        // Kiểm tra nếu không có limit và page thì sẽ lấy tất cả sản phẩm
+        const isPagination = limit !== undefined;
+
+        let response;
+        if (isPagination) {
+            // Nếu có limit và page thì lấy sản phẩm theo phân trang
+            response = await ProductService.getAllProduct(Number(limit) , Number(page) , sort, filter);
+        } else {
+            // Nếu không có limit và page thì lấy tất cả sản phẩm
+            response = await ProductService.getAllProduct(null, null, sort, filter);
+        }
+        return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
-            message: e
-        })
+            message: e.message || 'An error occurred while fetching products'
+        });
     }
-}
+};
 const getAllType = async (req, res) => {
     try {
         const response = await ProductService.getAllType()

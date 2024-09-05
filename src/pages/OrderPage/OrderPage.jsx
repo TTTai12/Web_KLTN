@@ -9,7 +9,7 @@ import {
   WrapperListOrder,
   WrapperRight,
   WrapperStyleHeader,
-  WrapperStyleHeaderDilivery,
+  WrapperStyleHeaderDelivery,
   WrapperTotal,
 } from "./style";
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
@@ -235,7 +235,7 @@ const OrderPage = () => {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <WrapperLeft>
             <h4>Phí giao hàng</h4>
-            <WrapperStyleHeaderDilivery>
+            <WrapperStyleHeaderDelivery>
               <StepComponent
                 items={itemsDelivery}
                 current={
@@ -248,7 +248,7 @@ const OrderPage = () => {
                     : 3
                 }
               />
-            </WrapperStyleHeaderDilivery>
+            </WrapperStyleHeaderDelivery>
             <WrapperStyleHeader>
               <span style={{ display: "inline-block", width: "390px" }}>
                 <CustomCheckbox
@@ -389,7 +389,7 @@ const OrderPage = () => {
             </WrapperListOrder>
           </WrapperLeft>
           <WrapperRight>
-            <div style={{ width: "100%" }}>
+            <div style={{ width: "100%" ,marginTop: "60px"}}>
               <WrapperInfo>
                 <div>
                   <span>Địa chỉ: </span>
