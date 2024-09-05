@@ -133,14 +133,24 @@ const OrderPage = () => {
     return 0;
   }, [order]);
 
+  // đang lõi code này
+  // const deliveryPriceMemo = useMemo(() => {
+  //   if (priceMemo >= 20000 && priceMemo < 500000) {
+  //     return 10000;
+  //   } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
+  //     return 0;
+  //   } else {
+  //     return 20000;
+  //   }
+  // }, [priceMemo]);
   const deliveryPriceMemo = useMemo(() => {
-    if (priceMemo < 200000) {
-      return 20000;
-    } else if (priceMemo >= 200000 && priceMemo < 500000) {
+    if (priceMemo > 200000) {
       return 10000;
-    } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
+    } else if (priceMemo === 0) {
       return 0;
-    } 
+    } else {
+      return 20000;
+    }
   }, [priceMemo]);
 
   const totalPriceMemo = useMemo(() => {

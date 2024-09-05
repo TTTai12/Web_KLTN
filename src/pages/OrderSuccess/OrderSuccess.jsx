@@ -11,7 +11,6 @@ const OrderSuccess = () => {
   const location = useLocation()
   const {state} = location
   console.log('location', location)
-
   return (
     <div style={{ background: "#f5f5fa", with: "100%", height: "100vh" }}>
       <Loading isPending={false}>
@@ -41,33 +40,29 @@ const OrderSuccess = () => {
                   return (
                     <WrapperItemOrder key={order?.name}>
                       <div style={{width: '900px', display: 'flex', alignItems: 'center', gap: 40}}> 
-                        <img src={order.image} style={{width: '100px', height: '100px', objectFit: 'cover'}}/>
+                      <img src={order.image} style={{width: '100px', height: '100px', objectFit: 'cover'}}/>
                         <div style={{
                           width: 260,
                           overflow: 'hidden',
                           textOverflow:'ellipsis',
-                          whiteSpace:'nowrap',
-                          fontSize: 20,
+                          whiteSpace:'nowrap'
                         }}>{order?.name}</div>
                       </div>
                       <div style={{flex: 1, display: 'flex', alignItems: 'center',gap: '10px'}}>
                         <span>
-                          <span style={{ fontSize: '20px', color: '#242424' }}>Số lượng: {order?.amount}</span>
+                        <span style={{ fontSize: '13px', color: '#242424' }}>Số lượng: {order?.amount}</span>
                         </span>
                         <span>
-                          <span style={{ fontSize: '20px', color: '#242424' }}>Giá tiền: {convertPrice(order?.price)}</span>
+                        <span style={{ fontSize: '13px', color: '#242424' }}>Giá tiền: {convertPrice(order?.price)}</span>
                         </span>
-                        
                       </div>
                     </WrapperItemOrder>
                   )
                 })}
               </WrapperItemOrderInfo>
-              <div>
-                <WrapperItemPrice>
-                  Tổng tiền: {convertPrice(state?.totalPriceMemo)}
-                </WrapperItemPrice>
-              </div>
+              <WrapperItemPrice>
+                <span style={{ fontSize: '16px', color: 'red' }}>Tổng tiền: {convertPrice(state?.totalPriceMemo)}</span>
+              </WrapperItemPrice>
             </WrapperContainer>
           </div>
         </div>

@@ -84,14 +84,24 @@ const PaymentPage = () => {
     return 0;
   }, [order]);
 
+  // đang lõi code này
+  // const deliveryPriceMemo = useMemo(() => {
+  //   if (priceMemo >= 20000 && priceMemo < 500000) {
+  //     return 10000;
+  //   } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
+  //     return 0;
+  //   } else {
+  //     return 20000;
+  //   }
+  // }, [priceMemo]);
   const deliveryPriceMemo = useMemo(() => {
-    if (priceMemo < 200000) {
-      return 20000;
-    } else if (priceMemo >= 200000 && priceMemo < 500000) {
+    if (priceMemo > 200000) {
       return 10000;
-    } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
+    } else if (priceMemo === 0) {
       return 0;
-    } 
+    } else {
+      return 20000;
+    }
   }, [priceMemo]);
 
   const totalPriceMemo = useMemo(() => {
@@ -359,14 +369,14 @@ const PaymentPage = () => {
               </div>
               {payment === "paypal" && sdkReady ? (
                 <div style={{ width: "320px" }}>
-                  {/* <PayPalButton
+                  <PayPalButton
                     amount={Math.round(totalPriceMemo / 30000)}
                     // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                     onSuccess={onSuccessPaypal}
                     onError={() => {
                       alert("Erroe");
                     }}
-                  /> */}
+                  />
                 </div>
               ) : (
                 <ButtonComponent
