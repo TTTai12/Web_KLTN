@@ -3,7 +3,7 @@ import { Label, WrapperInfo, WrapperContainer, WrapperValue, WrapperCountOrder, 
 import Loading from '../../components/LoadingComponent/Loading';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { orderContant } from '../../contant';
+import { orderContant } from '../../contant'
 import { convertPrice } from '../../utils';
 
 const OrderSuccess = () => {
