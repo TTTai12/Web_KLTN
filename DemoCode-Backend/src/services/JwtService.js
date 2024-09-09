@@ -34,7 +34,7 @@ const refreshTokenJwtService = (token) => {
                 })
                 resolve({
                     status: 'OK',
-                    message: 'SUCESS',
+                    message: 'SUCCESS',
                     access_token
                 })
             })
