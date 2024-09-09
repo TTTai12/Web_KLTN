@@ -139,30 +139,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
               </button>
             </WrapperQualityProduct>
           </div>
-          <div
-            style={{
-              margin: "10px 0 20px",
-              padding: "10px 0",
-              borderTop: "1px solid #e5e5e5",
-              borderBottom: "1px solid #e5e5e5",
-              position: 'relative'
-            }}
-          >
-            <div style={{ marginBottom: "10px" , fontSize:'20px',color: 'rgb(39, 39, 42)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              Thông tin sản phẩm
-              <DropdownToggle onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-                {isDropdownOpen ? <UpOutlined /> : <DownOutlined />}
-              </DropdownToggle>
-            </div>
-            <DropdownContent isOpen={isDropdownOpen}>
-              <WrapperDescriptionProduct>
-                <div>
-                  <Image style={{ width: '16px', height: '16px',  marginRight: '8px',  }} src="https://salt.tikicdn.com/ts/upload/81/61/d4/92e63f173e7983b86492be159fe0cff4.png" alt="blue-check" />
-                  <span className="description">{productDetails?.description}</span>
-                </div>
-              </WrapperDescriptionProduct>
-            </DropdownContent>
-          </div>
+        
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <ButtonComponent
               size={40}
@@ -189,6 +166,30 @@ const ProductDetailsComponent = ({ idProduct }) => {
               textButton={"Mua trước trả sau"}
               styleTextButton={{ color: "rgb(13, 92, 182)", fontSize: "15px" }}
             ></ButtonComponent>
+          </div>
+          <div
+            style={{
+              margin: "10px 0 20px",
+              padding: "10px 0",
+              borderTop: "1px solid #e5e5e5",
+              borderBottom: "1px solid #e5e5e5",
+              position: 'relative'
+            }}
+          >
+            <div style={{ marginBottom: "10px" , fontSize:'20px',color: 'rgb(39, 39, 42)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              Thông tin sản phẩm
+              <DropdownToggle onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                {isDropdownOpen ? <UpOutlined /> : <DownOutlined />}
+              </DropdownToggle>
+            </div>
+            <DropdownContent isOpen={isDropdownOpen}>
+              <WrapperDescriptionProduct>
+                <div>
+                  <Image style={{ width: '16px', height: '16px',  marginRight: '8px',  }} src="https://salt.tikicdn.com/ts/upload/81/61/d4/92e63f173e7983b86492be159fe0cff4.png" alt="blue-check" />
+                  <span className="description">{productDetails?.description}</span>
+                </div>
+              </WrapperDescriptionProduct>
+            </DropdownContent>
           </div>
         </Col>
       </Row>
