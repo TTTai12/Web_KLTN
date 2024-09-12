@@ -261,6 +261,7 @@ const PaymentPage = () => {
                 <WrapperRadio onChange={handlePayment} value={payment}>
                   <Radio value="later_money">Thanh toán tiền mặt khi nhận hàng</Radio>
                   <Radio value="paypal"> Thanh toán tiền bằng PayPal</Radio>
+                  <Radio value="vnpay"> Thanh toán tiền bằng VNPAY</Radio>
                 </WrapperRadio>
               </div>
             </WrapperLeft>
@@ -356,20 +357,33 @@ const PaymentPage = () => {
                     />
                   </PayPalScriptProvider>
                 </div>
+              ) : payment === "vnpay" ? (
+                <ButtonComponent
+                  size={40}
+                  styleButton={{
+                    background: 'rgb(16, 135, 255)',
+                    height: '48px',
+                    width: '320px',
+                    border: 'none',
+                    borderRadius: '4px',
+                  }}
+                  textButton={'Thanh toán với VNPAY'}
+                  styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                />
               ) : (
                 <ButtonComponent
                   onClick={() => handleAddOrder()}
                   size={40}
                   styleButton={{
-                      background: 'rgb(255, 57, 69)',
-                      height: '48px',
-                      width: '320px',
-                      border: 'none',
-                      borderRadius: '4px'
+                    background: 'rgb(255, 57, 69)',
+                    height: '48px',
+                    width: '320px',
+                    border: 'none',
+                    borderRadius: '4px',
                   }}
                   textButton={'Đặt hàng'}
                   styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-              ></ButtonComponent>
+                />
               )}
             </WrapperRight>
           </div>
