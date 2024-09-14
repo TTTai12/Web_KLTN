@@ -1,5 +1,5 @@
 import { Form, Radio } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Label,
   WrapperInfo,
@@ -13,7 +13,6 @@ import {
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { convertPrice } from "../../utils";
-import { useMemo } from "react";
 import ModalComponent from "../../components/ModalComponent/ModalComponent";
 import InputComponent from "../../components/InputComponent/InputComponent";
 import { useMutationHooks } from "../../hooks/useMutationHook";
@@ -24,7 +23,7 @@ import * as message from "../../components/Message/Message";
 import { updateUser } from "../../redux/slides/userSlide";
 import { useNavigate } from "react-router-dom";
 import { removeAllOrderProduct } from "../../redux/slides/orderSlide";
-//import { PayPalButton } from "react-paypal-button-v2";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import * as PaymentService from "../../services/PaymentService";
 
 const PaymentPage = () => {
@@ -34,8 +33,6 @@ const PaymentPage = () => {
   const [delivery, setDelivery] = useState("fast");
   const [payment, setPayment] = useState("later_money");
   const navigate = useNavigate();
-  const [sdkReady, setSdkReady] = useState(false);
-
   const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false);
   const [stateUserDetails, setStateUserDetails] = useState({
     name: "",
@@ -85,16 +82,6 @@ const PaymentPage = () => {
     return 0;
   }, [order]);
 
-  // đang lõi code này
-  // const deliveryPriceMemo = useMemo(() => {
-  //   if (priceMemo >= 20000 && priceMemo < 500000) {
-  //     return 10000;
-  //   } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
-  //     return 0;
-  //   } else {
-  //     return 20000;
-  //   }
-  // }, [priceMemo]);
   const deliveryPriceMemo = useMemo(() => {
     if (priceMemo > 200000) {
       return 10000;
@@ -122,7 +109,6 @@ const PaymentPage = () => {
       priceMemo &&
       user?.id
     ) {
-      // eslint-disable-next-line no-unused-expressions
       mutationAddOrder.mutate({
         token: user?.access_token,
         orderItems: order?.orderItemsSelected,
@@ -232,6 +218,7 @@ const PaymentPage = () => {
       [e.target.name]: e.target.value,
     });
   };
+
   const handleDelivery = (e) => {
     setDelivery(e.target.value);
   };
@@ -239,58 +226,52 @@ const PaymentPage = () => {
   const handlePayment = (e) => {
     setPayment(e.target.value);
   };
+
   return (
-    <div style={{ background: "#f5f5fa", with: "100%", height: "100vh" }}>
+    <div style={{ background: "#f5f5fa", width: "100%", height: "100vh" }}>
       <Loading isPending={isPendingAddOrder}>
         <div style={{ height: "100%", width: "1000px", margin: "0 auto" }}>
           <h3>Thanh toán</h3>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <WrapperLeft>
-                <div>
-                  <Label style={{ color: "#ea8500", fontWeight: "bold", fontSize: "20px",}} > Chọn phương thức giao hàng</Label>
-                  <WrapperRadio onChange={handleDelivery} value={delivery}>
-                    <Radio value="fast">
-                      <span style={{ color: "#ea8500", fontWeight: "bold", }}>
-                        GARB
-                      </span>{" "}
-                      Giao nhanh 4h
-                    </Radio>
-                    <Radio value="gojek">
-                      <span style={{ color: "#ea8500", fontWeight: "bold" }}>
-                        GO
-                      </span>{" "}
-                      Giao hàng tiết kiệm
-                    </Radio>
-                  </WrapperRadio>
-                </div>
-              
-              
-                <div>
-                  <Label style={{ color: "#ea8500", fontWeight: "bold", fontSize: "20px",}} >Chọn phương thức thanh toán</Label>
-                  <WrapperRadio onChange={handlePayment} value={payment}>
-                    <Radio value="later_money">
-                      {" "}
-                      Thanh toán tiền mặt khi nhận hàng
-                    </Radio>
-                    <Radio value="paypal"> Thanh toán tiền bằng paypal</Radio>
-                  </WrapperRadio>
-                </div>
-              
+              <div>
+                <Label style={{ color: "#ea8500", fontWeight: "bold", fontSize: "20px" }}>
+                  Chọn phương thức giao hàng
+                </Label>
+                <WrapperRadio onChange={handleDelivery} value={delivery}>
+                  <Radio value="fast">
+                    <span style={{ color: "#ea8500", fontWeight: "bold" }}>
+                      GARB
+                    </span>{" "}
+                    Giao nhanh 4h
+                  </Radio>
+                  <Radio value="gojek">
+                    <span style={{ color: "#ea8500", fontWeight: "bold" }}>
+                      GO
+                    </span>{" "}
+                    Giao hàng tiết kiệm
+                  </Radio>
+                </WrapperRadio>
+              </div>
+
+              <div>
+                <Label style={{ color: "#ea8500", fontWeight: "bold", fontSize: "20px" }}>
+                  Chọn phương thức thanh toán
+                </Label>
+                <WrapperRadio onChange={handlePayment} value={payment}>
+                  <Radio value="later_money">Thanh toán tiền mặt khi nhận hàng</Radio>
+                  <Radio value="paypal"> Thanh toán tiền bằng PayPal</Radio>
+                  <Radio value="vnpay"> Thanh toán tiền bằng VNPAY</Radio>
+                </WrapperRadio>
+              </div>
             </WrapperLeft>
             <WrapperRight>
-              <div style={{ width: "100%",fontSize: "20px", }}>
-                <WrapperInfo>
+              <div style={{ width: "100%" }}>
+              <WrapperInfo>
                   <div>
                     <span>Địa chỉ: </span>
-                    <span style={{ fontWeight: "bold",fontSize: "20px", }}>
-                      {`${user?.address} ${user?.city}`}{" "}
-                    </span>
-                    <span
-                      onClick={handleChangeAddress}
-                      style={{ color: "#9255FD", cursor: "pointer" }}
-                    >
-                      Thay đổi
-                    </span>
+                    <span style={{fontWeight: 'bold'}}>{ `${user?.address} ${user?.city}`} </span>
+                    <span onClick={handleChangeAddress} style={{color: '#9255FD', cursor:'pointer' }}> Thay đổi</span>
                   </div>
                 </WrapperInfo>
                 <WrapperInfo>
@@ -351,51 +332,58 @@ const PaymentPage = () => {
                 </WrapperInfo>
                 <WrapperTotal>
                   <span>Tổng tiền</span>
-                  <span style={{ display: "flex", flexDirection: "column" }}>
-                    <span
-                      style={{
-                        color: "rgb(254, 56, 52)",
-                        fontSize: "24px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {convertPrice(totalPriceMemo)}
-                    </span>
-                    <span style={{ color: "#000", fontSize: "11px" }}>
-                      (Đã bao gồm VAT nếu có)
-                    </span>
+                  <span style={{display:'flex', flexDirection: 'column'}}>
+                    <span style={{color: 'rgb(254, 56, 52)', fontSize: '24px', fontWeight: 'bold'}}>{convertPrice(totalPriceMemo)}</span>
+                    <span style={{color: '#000', fontSize: '11px'}}>(Đã bao gồm VAT nếu có)</span>
                   </span>
                 </WrapperTotal>
               </div>
-              {payment === "paypal" && sdkReady ? (
+              {payment === "paypal" ? (
                 <div style={{ width: "320px" }}>
-                  <PayPalButton
-                    amount={Math.round(totalPriceMemo / 30000)}
-                    // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-                    onSuccess={onSuccessPaypal}
-                    onError={() => {
-                      alert("Erroe");
-                    }}
-                  />
+                  <PayPalScriptProvider options={{ "client-id": "test" }}>
+                    <PayPalButtons
+                      createOrder={(data, actions) =>
+                        actions.order.create({
+                          purchase_units: [
+                            {
+                              amount: {
+                                value: (totalPriceMemo / 24545).toFixed(2),
+                              },
+                            },
+                          ],
+                        })
+                      }
+                      onApprove={onSuccessPaypal}
+                    />
+                  </PayPalScriptProvider>
                 </div>
+              ) : payment === "vnpay" ? (
+                <ButtonComponent
+                  size={40}
+                  styleButton={{
+                    background: 'rgb(16, 135, 255)',
+                    height: '48px',
+                    width: '320px',
+                    border: 'none',
+                    borderRadius: '4px',
+                  }}
+                  textButton={'Thanh toán với VNPAY'}
+                  styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                />
               ) : (
                 <ButtonComponent
                   onClick={() => handleAddOrder()}
                   size={40}
                   styleButton={{
-                    background: "rgb(255, 57, 69)",
-                    height: "48px",
-                    width: "320px",
-                    border: "none",
-                    borderRadius: "4px",
+                    background: 'rgb(255, 57, 69)',
+                    height: '48px',
+                    width: '320px',
+                    border: 'none',
+                    borderRadius: '4px',
                   }}
-                  textButton={"Đặt hàng"}
-                  styleTextButton={{
-                    color: "#fff",
-                    fontSize: "15px",
-                    fontWeight: "700",
-                  }}
-                ></ButtonComponent>
+                  textButton={'Đặt hàng'}
+                  styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                />
               )}
             </WrapperRight>
           </div>
@@ -411,7 +399,6 @@ const PaymentPage = () => {
               name="basic"
               labelCol={{ span: 4 }}
               wrapperCol={{ span: 20 }}
-              // onFinish={onUpdateUser}
               autoComplete="on"
               form={form}
             >
@@ -440,9 +427,7 @@ const PaymentPage = () => {
               <Form.Item
                 label="Phone"
                 name="phone"
-                rules={[
-                  { required: true, message: "Please input your  phone!" },
-                ]}
+                rules={[{ required: true, message: "Please input your phone!" }]}
               >
                 <InputComponent
                   value={stateUserDetails.phone}
@@ -450,13 +435,10 @@ const PaymentPage = () => {
                   name="phone"
                 />
               </Form.Item>
-
               <Form.Item
-                label="Adress"
+                label="Address"
                 name="address"
-                rules={[
-                  { required: true, message: "Please input your  address!" },
-                ]}
+                rules={[{ required: true, message: "Please input your address!" }]}
               >
                 <InputComponent
                   value={stateUserDetails.address}
