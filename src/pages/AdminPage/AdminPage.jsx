@@ -5,6 +5,7 @@ import { getItem } from "../../utils";
 import HeaderComponent from "../../components/HeaderComponent/HeaderComponent";
 import AdminUser from '../../components/AdminUser/AdminUser';
 import AdminProduct from '../../components/AdminProduct/AdminProduct';
+import OrderAdmin from "../../components/OrderAdmin/OrderAdmin";
 
 const AdminPage = () => {
   
@@ -25,6 +26,10 @@ const AdminPage = () => {
       case 'products':
         return (
           <AdminProduct />
+        )
+      case 'orders':
+        return (
+          <OrderAdmin />
         )
       default:
         return <></>

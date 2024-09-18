@@ -234,7 +234,7 @@ const PaymentPage = () => {
           <h3>Thanh toán</h3>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <WrapperLeft>
-              <div>
+            <div>
                 <Label style={{ color: "#ea8500", fontWeight: "bold", fontSize: "20px" }}>
                   Chọn phương thức giao hàng
                 </Label>
@@ -261,7 +261,6 @@ const PaymentPage = () => {
                 <WrapperRadio onChange={handlePayment} value={payment}>
                   <Radio value="later_money">Thanh toán tiền mặt khi nhận hàng</Radio>
                   <Radio value="paypal"> Thanh toán tiền bằng PayPal</Radio>
-                  <Radio value="vnpay"> Thanh toán tiền bằng VNPAY</Radio>
                 </WrapperRadio>
               </div>
             </WrapperLeft>

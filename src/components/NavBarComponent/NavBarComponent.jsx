@@ -8,9 +8,9 @@ const NavBarComponent = () => {
   const onChange = () => {};
 
   const images = [
+    "https://salt.tikicdn.com/cache/100x100/ts/category/92/b5/c0/3ffdb7dbfafd5f8330783e1df20747f6.png.webp",
     "https://salt.tikicdn.com/cache/100x100/ts/category/54/c0/ff/fe98a4afa2d3e5142dc8096addc4e40b.png.webp",
     "https://salt.tikicdn.com/cache/100x100/ts/category/8b/d4/a8/5924758b5c36f3b1c43b6843f52d6dd2.png.webp",
-    "https://salt.tikicdn.com/cache/100x100/ts/category/92/b5/c0/3ffdb7dbfafd5f8330783e1df20747f6.png.webp",
     "https://salt.tikicdn.com/cache/100x100/ts/category/2d/7c/45/e4976f3fa4061ab310c11d2a1b759e5b.png.webp",
     "https://salt.tikicdn.com/cache/100x100/ts/category/61/d4/ea/e6ea3ffc1fcde3b6224d2bb691ea16a2.png.webp",
     "https://salt.tikicdn.com/cache/100x100/ts/category/61/d4/ea/e6ea3ffc1fcde3b6224d2bb691ea16a2.png.webp",
@@ -72,12 +72,12 @@ const NavBarComponent = () => {
       <WrapperContent>
         <div className="category">
           {renderContent("text", [
-            "Dây sạc",
-            "Giá đỡ",
-            "Kính Cường Lực",
-            "Tai Nghe",
-            "Ốp Lưng",
-            "TIVI",
+            "Laptop",
+            // "Giá đỡ",
+            // "Kính Cường Lực",
+            // "Tai Nghe",
+            // "Ốp Lưng",
+            // "TIVI",
           ])}
         </div>
       </WrapperContent>

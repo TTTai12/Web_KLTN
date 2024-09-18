@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   WrapperContainerLeft,
   WrapperContainerRight,
@@ -8,111 +8,129 @@ import InputForm from "../../components/InputForm/InputForm";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import { Image } from "antd";
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
-import * as message from '../../components/Message/Message'
-import { useEffect } from 'react'
+import * as message from '../../components/Message/Message';
 
 const SignUpPage = () => {
-  const [isShowPassword, setIsShowPassword] = useState(false)
-  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false)
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
- 
-  const mutation = useMutationHooks(
-    data => UserService.signupUser(data)
-  )
-  const { data, isPending, isSuccess, isError  } = mutation
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+
+  const mutation = useMutationHooks(data => UserService.signupUser(data));
+  const { data, isPending, isSuccess, isError } = mutation;
 
   useEffect(() => {
-    if ( isSuccess && data?.message === 'SUCCESS') {
-      message.success()
-      handleNavigateSignIn()
+    if (isSuccess && data?.message === 'SUCCESS') {
+      message.success();
+      handleNavigateSignIn();
     } else if (isError) {
-      message.error()
+      message.error();
     }
-  }, [isSuccess, isError])
-  const navigate = useNavigate()
+  }, [isSuccess, isError]);
 
-  const handleOnchangeEmail = (value) => {
-    setEmail(value)
-  }
-  const handleOnchangePassword = (value) => {
-    setPassword(value)
-  }
+  const navigate = useNavigate();
 
-  const handleOnchangeConfirmPassword = (value) => {
-    setConfirmPassword(value)
-  }
+  const handleOnchangeEmail = (value) => setEmail(value);
+  const handleOnchangePassword = (value) => setPassword(value);
+  const handleOnchangeConfirmPassword = (value) => setConfirmPassword(value);
+  const handleOnchangeName = (value) => setName(value);
+  const handleOnchangePhone = (value) => setPhone(value);
+  const handleOnchangeCity = (value) => setCity(value);
+  const handleOnchangeAddress = (value) => setAddress(value);
 
   const handleNavigateSignIn = () => {
-    navigate('/sign-in')
-  }
+    navigate('/sign-in');
+  };
 
   const handleSignUp = () => {
-    mutation.mutate({ 
-      email, 
-      password, 
-      confirmPassword })
-      console.log("sign-up", email, password, confirmPassword);
-  }
+    if (!email.includes('@')) {
+      return message.error('Email không hợp lệ');
+    }
+    if (password !== confirmPassword) {
+      return message.error('Mật khẩu và xác nhận mật khẩu không khớp');
+    }
+    if (password.length < 6) {
+      return message.error('Mật khẩu phải ít nhất 6 ký tự');
+    }
+    if (!name || !phone || !city || !address) {
+      return message.error('Vui lòng điền đầy đủ thông tin');
+    }
+
+    mutation.mutate({
+      email,
+      password,
+      confirmPassword,
+      name,
+      phone,
+      city,
+      address,
+    });
+    console.log("sign-up", { email, password, confirmPassword, name, phone, city, address });
+  };
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0, 0, 0, 0.53)', height: '100vh' }}>
-      <div style={{ width: '800px', height: '445px', borderRadius: '6px', background: '#fff', display: 'flex' }}>
-      <WrapperContainerLeft>
+      <div style={{ width: '800px', borderRadius: '6px', background: '#fff', display: 'flex', padding: '20px' }}>
+        <WrapperContainerLeft>
           <h1>Xin chào</h1>
-          <p>Đăng nhập và tạo tài khoản</p>
+          <p>Đăng ký tài khoản mới</p>
+          <InputForm style={{ marginBottom: '10px' }} placeholder="Name" value={name} onChange={handleOnchangeName} />
+          <InputForm style={{ marginBottom: '10px' }} placeholder="Phone" value={phone} onChange={handleOnchangePhone} />
+          <InputForm style={{ marginBottom: '10px' }} placeholder="City" value={city} onChange={handleOnchangeCity} />
+          <InputForm style={{ marginBottom: '10px' }} placeholder="Address" value={address} onChange={handleOnchangeAddress} />
           <InputForm style={{ marginBottom: '10px' }} placeholder="abc@gmail.com" value={email} onChange={handleOnchangeEmail} />
-            <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }}>
             <span
-            onClick={() => setIsShowPassword(!isShowPassword)}
+              onClick={() => setIsShowPassword(!isShowPassword)}
               style={{
                 zIndex: 10,
                 position: 'absolute',
                 top: '4px',
                 right: '8px'
               }}
-            >{
-                isShowPassword ? (
-                  <EyeFilled />
-                ) : (
-                  <EyeInvisibleFilled />
-                )
-              }
+            >
+              {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
             </span>
-            <InputForm placeholder="password" style={{ marginBottom: '10px' }} type={isShowPassword ? "text" : "password"}
-              value={password} onChange={handleOnchangePassword} />
+            <InputForm
+              placeholder="password"
+              style={{ marginBottom: '10px' }}
+              type={isShowPassword ? "text" : "password"}
+              value={password}
+              onChange={handleOnchangePassword}
+            />
           </div>
           <div style={{ position: 'relative' }}>
             <span
-            onClick={() => setIsShowConfirmPassword(!isShowConfirmPassword)}
+              onClick={() => setIsShowConfirmPassword(!isShowConfirmPassword)}
               style={{
                 zIndex: 10,
                 position: 'absolute',
                 top: '4px',
                 right: '8px'
               }}
-            >{
-              isShowConfirmPassword ? (
-                  <EyeFilled />
-                ) : (
-                  <EyeInvisibleFilled />
-                )
-              }
+            >
+              {isShowConfirmPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
             </span>
-            <InputForm placeholder="comfirm password" type={isShowConfirmPassword ? "text" : "password"}
-              value={confirmPassword} onChange={handleOnchangeConfirmPassword}
+            <InputForm
+              placeholder="Confirm password"
+              type={isShowConfirmPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={handleOnchangeConfirmPassword}
             />
           </div>
           {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
           <Loading isPending={isPending}>
             <ButtonComponent
-              disabled={!email.length || !password.length || !confirmPassword.length}
+              disabled={!email.length || !password.length || !confirmPassword.length || !name.length || !phone.length || !city.length || !address.length}
               onClick={handleSignUp}
               size={40}
               styleButton={{
