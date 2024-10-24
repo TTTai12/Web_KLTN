@@ -67,7 +67,7 @@ const MyOrderPage = () => {
   const renderProduct = (data) => {
     return data?.map((order) => {
       return <WrapperHeaderItem key={order?._id}> 
-              <img src={order?.image} 
+              <img src={order?.images[0]} 
                 style={{
                   width: '70px', 
                   height: '70px', 

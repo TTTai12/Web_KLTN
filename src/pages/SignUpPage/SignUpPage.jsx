@@ -12,24 +12,24 @@ import { useNavigate } from "react-router-dom";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
-import * as message from '../../components/Message/Message';
+import * as message from "../../components/Message/Message";
 
 const SignUpPage = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [city, setCity] = useState('');
-  const [address, setAddress] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [address, setAddress] = useState("");
 
-  const mutation = useMutationHooks(data => UserService.signupUser(data));
+  const mutation = useMutationHooks((data) => UserService.signupUser(data));
   const { data, isPending, isSuccess, isError } = mutation;
 
   useEffect(() => {
-    if (isSuccess && data?.message === 'SUCCESS') {
+    if (isSuccess && data?.message === "SUCCESS") {
       message.success();
       handleNavigateSignIn();
     } else if (isError) {
@@ -48,21 +48,21 @@ const SignUpPage = () => {
   const handleOnchangeAddress = (value) => setAddress(value);
 
   const handleNavigateSignIn = () => {
-    navigate('/sign-in');
+    navigate("/sign-in");
   };
 
   const handleSignUp = () => {
-    if (!email.includes('@')) {
-      return message.error('Email không hợp lệ');
+    if (!email.includes("@")) {
+      return message.error("Email không hợp lệ");
     }
     if (password !== confirmPassword) {
-      return message.error('Mật khẩu và xác nhận mật khẩu không khớp');
+      return message.error("Mật khẩu và xác nhận mật khẩu không khớp");
     }
     if (password.length < 6) {
-      return message.error('Mật khẩu phải ít nhất 6 ký tự');
+      return message.error("Mật khẩu phải ít nhất 6 ký tự");
     }
     if (!name || !phone || !city || !address) {
-      return message.error('Vui lòng điền đầy đủ thông tin');
+      return message.error("Vui lòng điền đầy đủ thông tin");
     }
 
     mutation.mutate({
@@ -74,89 +74,212 @@ const SignUpPage = () => {
       city,
       address,
     });
-    console.log("sign-up", { email, password, confirmPassword, name, phone, city, address });
+    console.log("sign-up", {
+      email,
+      password,
+      confirmPassword,
+      name,
+      phone,
+      city,
+      address,
+    });
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0, 0, 0, 0.53)', height: '100vh' }}>
-      <div style={{ width: '800px', borderRadius: '6px', background: '#fff', display: 'flex', padding: '20px' }}>
-        <WrapperContainerLeft>
-          <h1>Xin chào</h1>
-          <p>Đăng ký tài khoản mới</p>
-          <InputForm style={{ marginBottom: '10px' }} placeholder="Name" value={name} onChange={handleOnchangeName} />
-          <InputForm style={{ marginBottom: '10px' }} placeholder="Phone" value={phone} onChange={handleOnchangePhone} />
-          <InputForm style={{ marginBottom: '10px' }} placeholder="City" value={city} onChange={handleOnchangeCity} />
-          <InputForm style={{ marginBottom: '10px' }} placeholder="Address" value={address} onChange={handleOnchangeAddress} />
-          <InputForm style={{ marginBottom: '10px' }} placeholder="abc@gmail.com" value={email} onChange={handleOnchangeEmail} />
-          <div style={{ position: 'relative' }}>
-            <span
-              onClick={() => setIsShowPassword(!isShowPassword)}
-              style={{
-                zIndex: 10,
-                position: 'absolute',
-                top: '4px',
-                right: '8px'
-              }}
+    <div style={{ backgroundColor: "#666666" }}>
+      <div className="limiter">
+        <div className="container-login100">
+          <div className="wrap-login100">
+            <form
+              className="login100-form validate-form"
+              onSubmit={handleSignUp}
             >
-              {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
-            </span>
-            <InputForm
-              placeholder="password"
-              style={{ marginBottom: '10px' }}
-              type={isShowPassword ? "text" : "password"}
-              value={password}
-              onChange={handleOnchangePassword}
-            />
+              <span className="login100-form-title p-b-43">
+                Đăng ký tài khoản mới
+              </span>
+
+              {/* Name */}
+              <div
+                className="wrap-input100 validate-input"
+                data-validate="Name is required"
+              >
+                <InputForm
+                  className={`input100 ${name ? "has-val" : ""}`}
+                  value={name}
+                  onChange={handleOnchangeName}
+                />
+                <span className="focus-input100"></span>
+                <span className="label-input100">Name</span>
+              </div>
+
+              {/* Phone */}
+              <div
+                className="wrap-input100 validate-input"
+                data-validate="Phone is required"
+              >
+                <InputForm
+                  className={`input100 ${phone ? "has-val" : ""}`}
+                  value={phone}
+                  onChange={handleOnchangePhone}
+                />
+                <span className="focus-input100"></span>
+                <span className="label-input100">Phone</span>
+              </div>
+
+              {/* City */}
+              <div
+                className="wrap-input100 validate-input"
+                data-validate="City is required"
+              >
+                <InputForm
+                  className={`input100 ${city ? "has-val" : ""}`}
+                  value={city}
+                  onChange={handleOnchangeCity}
+                />
+                <span className="focus-input100"></span>
+                <span className="label-input100">City</span>
+              </div>
+
+              {/* Address */}
+              <div
+                className="wrap-input100 validate-input"
+                data-validate="Address is required"
+              >
+                <InputForm
+                  className={`input100 ${address ? "has-val" : ""}`}
+                  value={address}
+                  onChange={handleOnchangeAddress}
+                />
+                <span className="focus-input100"></span>
+                <span className="label-input100">Address</span>
+              </div>
+
+              {/* Email */}
+              <div
+                className="wrap-input100 validate-input"
+                data-validate="Valid email is required: ex@abc.xyz"
+              >
+                <InputForm
+                  className={`input100 ${email ? "has-val" : ""}`}
+                  value={email}
+                  onChange={handleOnchangeEmail}
+                />
+                <span className="focus-input100"></span>
+                <span className="label-input100">Email</span>
+              </div>
+
+              {/* Password */}
+              <div
+                className="wrap-input100 validate-input"
+                data-validate="Password is required"
+              >
+                <InputForm
+                  className={`input100 ${password ? "has-val" : ""}`}
+                  type={isShowPassword ? "text" : "password"}
+                  value={password}
+                  onChange={handleOnchangePassword}
+                />
+                <span className="focus-input100"></span>
+                <span className="label-input100">Password</span>
+                <span
+                  className="toggle-password"
+                  onClick={() => setIsShowPassword(!isShowPassword)} // Đổi trạng thái isShowPassword khi click
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                  }}
+                >
+                  {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
+                </span>
+              </div>
+
+              {/* Confirm Password */}
+              <div
+                className="wrap-input100 validate-input"
+                data-validate="Password confirmation is required"
+              >
+                <InputForm
+                  className={`input100 ${confirmPassword ? "has-val" : ""}`}
+                  type={isShowConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={handleOnchangeConfirmPassword}
+                />
+                <span className="focus-input100"></span>
+                <span className="label-input100">Confirm Password</span>
+                <span
+                  className="toggle-password"
+                  onClick={() => setIsShowPassword(!isShowPassword)} // Đổi trạng thái isShowPassword khi click
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                  }}
+                >
+                  {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
+                </span>
+              </div>
+
+              {/* Error Message */}
+              {data?.status === "ERR" && (
+                <span style={{ color: "red" }}>{data?.message}</span>
+              )}
+
+              {/* Đăng ký button */}
+              <Loading isPending={isPending}>
+                <div className="container-login100-form-btn">
+                  <ButtonComponent
+                    disabled={
+                      !email.length ||
+                      !password.length ||
+                      !confirmPassword.length ||
+                      !name.length ||
+                      !phone.length ||
+                      !city.length ||
+                      !address.length
+                    }
+                    onClick={handleSignUp}
+                    size={40}
+                    textButton={"Đăng ký"}
+                    styleButton={{
+                      background: "rgb(255, 57, 69)",
+                      height: "48px",
+                      width: "100%",
+                      border: "none",
+                      borderRadius: "20px",
+                    }}
+                    styleTextButton={{
+                      color: "#fff",
+                      fontSize: "15px",
+                      fontWeight: "700",
+                    }}
+                  ></ButtonComponent>
+                </div>
+              </Loading>
+
+              {/* Điều hướng sang trang đăng nhập */}
+              <div className="text-center p-t-46 p-b-20">
+                <p>
+                  Bạn đã có tài khoản?{" "}
+                  <WrapperTextLight onClick={handleNavigateSignIn}>
+                    {" "}
+                    Đăng nhập
+                  </WrapperTextLight>
+                </p>
+              </div>
+            </form>
+
+            {/* Phần hình ảnh bên phải */}
+            <div
+              className="login100-more"
+              style={{ backgroundImage: "url('img/12.jpg')" }}
+            ></div>
           </div>
-          <div style={{ position: 'relative' }}>
-            <span
-              onClick={() => setIsShowConfirmPassword(!isShowConfirmPassword)}
-              style={{
-                zIndex: 10,
-                position: 'absolute',
-                top: '4px',
-                right: '8px'
-              }}
-            >
-              {isShowConfirmPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
-            </span>
-            <InputForm
-              placeholder="Confirm password"
-              type={isShowConfirmPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={handleOnchangeConfirmPassword}
-            />
-          </div>
-          {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
-          <Loading isPending={isPending}>
-            <ButtonComponent
-              disabled={!email.length || !password.length || !confirmPassword.length || !name.length || !phone.length || !city.length || !address.length}
-              onClick={handleSignUp}
-              size={40}
-              styleButton={{
-                background: 'rgb(255, 57, 69)',
-                height: '48px',
-                width: '100%',
-                border: 'none',
-                borderRadius: '4px',
-                margin: '26px 0 10px'
-              }}
-              textButton={'Đăng ký'}
-              styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-            ></ButtonComponent>
-          </Loading>
-          <p>Bạn đã có tài khoản? <WrapperTextLight onClick={handleNavigateSignIn} > Đăng nhập</WrapperTextLight></p>
-        </WrapperContainerLeft>
-        <WrapperContainerRight>
-          <Image
-            src="https://salt.tikicdn.com/ts/upload/eb/f3/a3/25b2ccba8f33a5157f161b6a50f64a60.png"
-            preview={false}
-            alt="sign-in logo"
-            height="203px"
-            width="203px"
-          />
-          <h4>Mua sắm tại </h4>
-        </WrapperContainerRight>
+        </div>
       </div>
     </div>
   );

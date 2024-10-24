@@ -9,7 +9,7 @@ import {
 } from "./style";
 import { useState } from "react";
 import { Popover } from "antd";
-import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
+import ButttonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import {
   UserOutlined,
   CaretDownOutlined,
@@ -34,9 +34,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   const [isOpenPopup, setIsOpenPopup] = useState(false);
   const order = useSelector((state) => state.order);
   const [loading, setLoading] = useState(false);
-  const handleNavigateLogin = () => {
-    navigate("/sign-in");
-  };
+ 
 
   const handleLogout = async () => {
     setLoading(true);
@@ -95,34 +93,57 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   };
 
   return (
-    <div
-      style={{
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        background: "#9255FD",
-        justifyContent: "center",
-      }}
-    >
-      <WrapperHeader
-        style={{
-          justifyContent:
-            isHiddenSearch && isHiddenSearch ? "space-between" : "unset",
-        }}
-      >
-        <Col span={5}>
-          <WrapperTextHeader
-            onClick={() => navigate("/")}
-            style={{ cursor: "pointer" }}
-          >
-            <div style={{ height: "50px", width: "160px" }}>
-              <img src={logoImage} alt="Logo" />
+    <>
+      <div className="container-fluid">
+        <div className="row bg-secondary py-2 px-xl-5">
+          <div className="col-lg-6 d-none d-lg-block">
+            <div className="d-inline-flex align-items-center">
+              <a className="text-dark" href="">
+                FAQs
+              </a>
+              <span className="text-muted px-2">|</span>
+              <a className="text-dark" href="">
+                Help
+              </a>
+              <span className="text-muted px-2">|</span>
+              <a className="text-dark" href="">
+                Support
+              </a>
             </div>
-          </WrapperTextHeader>
-        </Col>
-        {!isHiddenSearch && (
-          <Col span={13}>
-            <ButtonInputSearch
+          </div>
+          <div className="col-lg-6 text-center text-lg-right">
+            <div className="d-inline-flex align-items-center">
+              <a className="text-dark px-2" href="">
+                <i className="fab fa-facebook-f"></i>
+              </a>
+              <a className="text-dark px-2" href="">
+                <i className="fab fa-twitter"></i>
+              </a>
+              <a className="text-dark px-2" href="">
+                <i className="fab fa-linkedin-in"></i>
+              </a>
+              <a className="text-dark px-2" href="">
+                <i className="fab fa-instagram"></i>
+              </a>
+              <a className="text-dark pl-2" href="">
+                <i className="fab fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="row align-items-center py-3 px-xl-5">
+          <div className="col-lg-3 d-none d-lg-block">
+            <a href="/" className="text-decoration-none">
+              <h1 className="m-0 display-5 font-weight-semi-bold">
+                <span className="text-primary font-weight-bold border px-3 mr-1">
+                  Fashion
+                </span>
+                Shop
+              </h1>
+            </a>
+          </div>
+          {!isHiddenSearch && (
+            <ButttonInputSearch
               size="large"
               bordered={false}
               textButton="Tìm kiếm"
@@ -130,74 +151,70 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
               onChange={onSearch}
               backgroundColorButton="#5a20c1"
             />
-          </Col>
-        )}
-        <Col
-          span={6}
-          style={{ display: "flex", gap: "54px", alignItems: "center" }}
-        >
-          <Loading isPending={loading}>
-            <WrapperHeaderAccount>
-              {userAvatar ? (
-                <img
-                  src={userAvatar}
-                  alt="avatar"
-                  style={{
-                    height: "30px",
-                    width: "30px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                />
-              ) : (
-                <UserOutlined style={{ fontSize: "30px" }} />
-              )}
-              {user?.access_token ? (
-                <>
-                  <Popover content={content} trigger="click" open={isOpenPopup}>
-                    <div
+          )}
+          <div className="col-lg-3 col-6 text-right">
+            <a className="btn border">
+              <Loading isPending={loading}>
+                <WrapperHeaderAccount>
+                  {userAvatar ? (
+                    <img
+                      src={userAvatar}
+                      alt="avatar"
                       style={{
-                        cursor: "pointer",
-                        maxWidth: 100,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
+                        height: "40px",
+                        width: "40px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
                       }}
-                      onClick={() => setIsOpenPopup((prev) => !prev)}
+                    />
+                  ) : (
+                    <UserOutlined style={{ fontSize: "30px" }} />
+                  )}
+                  {user?.access_token && (
+                    <Popover
+                      content={content}
+                      trigger="click"
+                      open={isOpenPopup}
                     >
-                      {userName?.length ? userName : user?.email}
-                    </div>
-                  </Popover>
-                </>
-              ) : (
+                      <div
+                        style={{
+                          cursor: "pointer",
+                          maxWidth: 100,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        onClick={() => setIsOpenPopup((prev) => !prev)}
+                      >
+                        {userName?.length ? userName : user?.email}
+                      </div>
+                    </Popover>
+                  )}
+                </WrapperHeaderAccount>
+              </Loading>
+            </a>
+            <a className="btn border">
+              {!isHiddenCart && (
                 <div
-                  onClick={handleNavigateLogin}
+                  onClick={() => navigate("/order")}
                   style={{ cursor: "pointer" }}
                 >
-                  <Span>Đăng nhập/Đăng ký</Span>
-                  <div>
-                    <Span>Tài khoản</Span>
-                    <CaretDownOutlined />
-                  </div>
+                  <Badge count={order?.orderItems?.length} size="small">
+                    <i
+                      className="fas fa-shopping-cart text-primary"
+                      style={{ fontSize: "20px" }}
+                    ></i>
+                  </Badge>
                 </div>
               )}
-            </WrapperHeaderAccount>
-          </Loading>
-          {!isHiddenCart && (
-            <div
-              onClick={() => navigate("/order")}
-              style={{ cursor: "pointer" }}
-            >
-              <Badge count={order?.orderItems?.length} size="small">
-                <ShoppingCartOutlined
-                  style={{ fontSize: "30px", color: "#fff" }}
-                />
-              </Badge>
-              <Span>Giỏ hàng</Span>
-            </div>
-          )}
-        </Col>
-      </WrapperHeader>
-    </div>
+            </a>
+            <a href="" className="btn border" style={{ fontSize: "20px" }}>
+              <i className="fas fa-heart text-primary"></i>
+              <span className="badge">0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

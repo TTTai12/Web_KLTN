@@ -22,11 +22,8 @@ const NavBarComponent = () => {
       case "text":
         return options.map((option, index) => (
           <div key={option} className="category-item">
-    
-        
             <TypeProductNavbar name={option} image={images[index]} />
-     
-        </div>
+          </div>
         ));
       case "checkbox":
         return (
@@ -67,31 +64,65 @@ const NavBarComponent = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "rgb(255, 255, 255)", marginRight: "15px" }}>
-      <WrapperLabelText>Danh mục sản phẩm</WrapperLabelText>
-      <WrapperContent>
+    <div className="col-lg-3 col-md-12">
+    {/* Danh mục sản phẩm Start */}
+    
         <div className="category">
           {renderContent("text", [
-            "Laptop",
-            // "Giá đỡ",
-            // "Kính Cường Lực",
-            // "Tai Nghe",
-            // "Ốp Lưng",
-            // "TIVI",
+            "Quần",
+            "Aó",
+            "váy",
+            "Áo khác",
           ])}
         </div>
-      </WrapperContent>
-      {/* <WrapperContent>
-        {renderContent("checkbox", [
-          { value: "a", label: "A" },
-          { value: "b", label: "B" },
-        ])}
-      </WrapperContent>
-      <WrapperContent>{renderContent("star", [3, 4, 5])}</WrapperContent>
-      <WrapperContent>
-        {renderContent("price", ["dưới 40.000", "trên 100.000"])}
-      </WrapperContent> */}
+   
+    {/* Danh mục sản phẩm End */}
+
+    {/* Filter by price Start */}
+    <div className="border-bottom mb-4 pb-4">
+      <h5 className="font-weight-semi-bold mb-4">Filter by price</h5>
+      <form>
+        {['All Price', '$0 - $100', '$100 - $200', '$200 - $300', '$300 - $400', '$400 - $500'].map((price, index) => (
+          <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3" key={index}>
+            <input type="checkbox" className="custom-control-input" id={`price-${index}`} />
+            <label className="custom-control-label" htmlFor={`price-${index}`}>{price}</label>
+            <span className="badge border font-weight-normal">{Math.floor(Math.random() * 300) + 100}</span>
+          </div>
+        ))}
+      </form>
     </div>
+    {/* Filter by price End */}
+
+    {/* Filter by color Start */}
+    <div className="border-bottom mb-4 pb-4">
+      <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
+      <form>
+        {['All Color', 'Black', 'White', 'Red', 'Blue', 'Green'].map((color, index) => (
+          <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3" key={index}>
+            <input type="checkbox" className="custom-control-input" id={`color-${index}`} />
+            <label className="custom-control-label" htmlFor={`color-${index}`}>{color}</label>
+            <span className="badge border font-weight-normal">{Math.floor(Math.random() * 300) + 100}</span>
+          </div>
+        ))}
+      </form>
+    </div>
+    {/* Filter by color End */}
+
+    {/* Filter by size Start */}
+    <div className="mb-5">
+      <h5 className="font-weight-semi-bold mb-4">Filter by size</h5>
+      <form>
+        {['All Size', 'XS', 'S', 'M', 'L', 'XL'].map((size, index) => (
+          <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3" key={index}>
+            <input type="checkbox" className="custom-control-input" id={`size-${index}`} />
+            <label className="custom-control-label" htmlFor={`size-${index}`}>{size}</label>
+            <span className="badge border font-weight-normal">{Math.floor(Math.random() * 300) + 100}</span>
+          </div>
+        ))}
+      </form>
+    </div>
+    {/* Filter by size End */}
+  </div>
   );
 };
 

@@ -1,11 +1,11 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
     orderItems: [
         {
             name: { type: String, required: true },
             amount: { type: Number, required: true },
-            image: { type: String, required: true },
+            images: { type: [String], required: true }, // Thay đổi thành mảng images
             price: { type: Number, required: true },
             discount: { type: Number },
             product: {
@@ -31,9 +31,9 @@ const orderSchema = new mongoose.Schema({
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Date },
 },
-    {
-        timestamps: true,
-    }
-);
+{
+    timestamps: true,
+});
+
 const Order = mongoose.model('Order', orderSchema);
-module.exports = Order
+module.exports = Order;

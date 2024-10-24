@@ -20,7 +20,7 @@ export const WrapperTextHeader = styled.span`
 export const WrapperHeaderAccount = styled.div`     
   display: flex;
   align-items: center;
-  color: #fff;
+  color: #000;
   gap:10px;
   
 `

@@ -13,12 +13,12 @@ const TypeProduct = ({ name }) => {
     );
   };
   return (
-    <div
-      style={{ padding: "0 10px", cursor: "pointer" }}
+    <a
+     className="nav-item nav-link"
       onClick={() => handleNavigatetype(name)}
     >
       {name}
-    </div>
+    </a>
   );
 };
 

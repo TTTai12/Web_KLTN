@@ -12,8 +12,8 @@ const app = express()
 const port = process.env.PORT || 3001
 
 app.use(cors());
-app.use(express.json({ limit: '100mb' })); // Tăng giới hạn lên 100MB
-app.use(express.urlencoded({ limit: '100mb', extended: true }));
+app.use(express.json({ limit: '300mb' })); // Tăng giới hạn lên 100MB
+app.use(express.urlencoded({ limit: '300mb', extended: true }));
 app.use(bodyParser.json())
 app.use(cookieParser())
 

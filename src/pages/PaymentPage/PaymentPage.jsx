@@ -34,30 +34,41 @@ const PaymentPage = () => {
   const [payment, setPayment] = useState("later_money");
   const navigate = useNavigate();
   const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false);
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+
   const [stateUserDetails, setStateUserDetails] = useState({
     name: "",
     phone: "",
     address: "",
     city: "",
   });
-  const [form] = Form.useForm();
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     form.setFieldsValue(stateUserDetails);
   }, [form, stateUserDetails]);
 
   useEffect(() => {
-    if (isOpenModalUpdateInfo) {
+    if (user) {
       setStateUserDetails({
-        city: user?.city,
-        name: user?.name,
-        address: user?.address,
-        phone: user?.phone,
+        name: user.name || "",
+        city: user.city || "",
+        phone: user.phone || "",
+        address: user.address || "",
       });
     }
-  }, [isOpenModalUpdateInfo]);
+  }, [user]);
+
+  // useEffect(() => {
+  //   if (isOpenModalUpdateInfo) {
+  //     setStateUserDetails({
+  //       city: user?.city,
+  //       name: user?.name,
+  //       address: user?.address,
+  //       phone: user?.phone,
+  //     });
+  //   }
+  // }, [isOpenModalUpdateInfo]);
 
   const handleChangeAddress = () => {
     setIsOpenModalUpdateInfo(true);
@@ -228,115 +239,168 @@ const PaymentPage = () => {
   };
 
   return (
-    <div style={{ background: "#f5f5fa", width: "100%", height: "100vh" }}>
-      <Loading isPending={isPendingAddOrder}>
-        <div style={{ height: "100%", width: "1000px", margin: "0 auto" }}>
-          <h3>Thanh toán</h3>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <WrapperLeft>
-            <div>
-                <Label style={{ color: "#ea8500", fontWeight: "bold", fontSize: "20px" }}>
-                  Chọn phương thức giao hàng
-                </Label>
-                <WrapperRadio onChange={handleDelivery} value={delivery}>
-                  <Radio value="fast">
-                    <span style={{ color: "#ea8500", fontWeight: "bold" }}>
-                      GARB
-                    </span>{" "}
-                    Giao nhanh 4h
-                  </Radio>
-                  <Radio value="gojek">
-                    <span style={{ color: "#ea8500", fontWeight: "bold" }}>
-                      GO
-                    </span>{" "}
-                    Giao hàng tiết kiệm
-                  </Radio>
-                </WrapperRadio>
+    <div className="container-fluid pt-5">
+      <div className="row px-xl-5">
+        <div className="col-lg-8">
+          <div className="mb-4">
+            <h4 className="font-weight-semi-bold mb-4">Địa chỉ thanh toán</h4>
+            <div className="row">
+              <div className="col-md-6 form-group">
+                <label>Tên</label>
+                <InputComponent
+                  value={stateUserDetails["name"]}
+                  onChange={handleOnchangeDetails}
+                  name="name"
+                  placeholder="Nhập tên"
+                />
               </div>
+              <div className="col-md-6 form-group">
+                <label>Thành phố</label>
+                <InputComponent
+                  value={stateUserDetails["city"]}
+                  onChange={handleOnchangeDetails}
+                  name="city"
+                  placeholder="Nhập thành phố"
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label>Số điện thoại</label>
+                <InputComponent
+                  value={stateUserDetails.phone}
+                  onChange={handleOnchangeDetails}
+                  name="phone"
+                  placeholder="Nhập số điện thoại"
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label>Địa chỉ</label>
+                <InputComponent
+                  value={stateUserDetails.address}
+                  onChange={handleOnchangeDetails}
+                  name="address"
+                  placeholder="Nhập địa chỉ"
+                />
+              </div>
+            </div>
+          </div>
+          {/* Phần Shipping Address có thể dùng tương tự */}
+        </div>
 
-              <div>
-                <Label style={{ color: "#ea8500", fontWeight: "bold", fontSize: "20px" }}>
-                  Chọn phương thức thanh toán
-                </Label>
-                <WrapperRadio onChange={handlePayment} value={payment}>
-                  <Radio value="later_money">Thanh toán tiền mặt khi nhận hàng</Radio>
-                  <Radio value="paypal"> Thanh toán tiền bằng PayPal</Radio>
-                </WrapperRadio>
+        <div className="col-lg-4">
+          <div className="card border-secondary mb-5">
+            <div className="card-header bg-secondary border-0">
+              <h4 className="font-weight-semi-bold m-0">Tổng đơn hàng</h4>
+            </div>
+
+            <div className="card-body">
+              <h5 className="font-weight-medium mb-3">Sản phẩm</h5>
+              {order.orderItemsSelected &&
+                order.orderItemsSelected.map((item) => (
+                  <div
+                    key={item.product.id}
+                    className="d-flex justify-content-between mb-3"
+                  >
+                    <p>{item.name}</p>
+                    <p>{convertPrice(item.price)}</p>
+                  </div>
+                ))}
+              <div className="d-flex justify-content-between mb-3 pt-1">
+                <span className="font-weight-medium">Tạm tính</span>
+                <span className="font-weight-medium">
+                  {convertPrice(priceMemo)}
+                </span>
               </div>
-            </WrapperLeft>
-            <WrapperRight>
-              <div style={{ width: "100%" }}>
-              <WrapperInfo>
-                  <div>
-                    <span>Địa chỉ: </span>
-                    <span style={{fontWeight: 'bold'}}>{ `${user?.address} ${user?.city}`} </span>
-                    <span onClick={handleChangeAddress} style={{color: '#9255FD', cursor:'pointer' }}> Thay đổi</span>
-                  </div>
-                </WrapperInfo>
-                <WrapperInfo>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <span>Tạm tính</span>
-                    <span
-                      style={{
-                        color: "#000",
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {convertPrice(priceMemo)}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <span>Giảm giá</span>
-                    <span
-                      style={{
-                        color: "#000",
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {convertPrice(priceDiscountMemo)}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <span>Phí giao hàng</span>
-                    <span
-                      style={{
-                        color: "#000",
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {convertPrice(deliveryPriceMemo)}
-                    </span>
-                  </div>
-                </WrapperInfo>
-                <WrapperTotal>
-                  <span>Tổng tiền</span>
-                  <span style={{display:'flex', flexDirection: 'column'}}>
-                    <span style={{color: 'rgb(254, 56, 52)', fontSize: '24px', fontWeight: 'bold'}}>{convertPrice(totalPriceMemo)}</span>
-                    <span style={{color: '#000', fontSize: '11px'}}>(Đã bao gồm VAT nếu có)</span>
-                  </span>
-                </WrapperTotal>
+              <div className="d-flex justify-content-between mb-3">
+                <span>Giảm giá</span>
+                <span>{convertPrice(priceDiscountMemo)}</span>
               </div>
+              <div className="d-flex justify-content-between">
+                <span className="font-weight-medium">Phí giao hàng</span>
+                <span className="font-weight-medium">
+                  {convertPrice(deliveryPriceMemo)}
+                </span>
+              </div>
+              <div className="d-flex justify-content-between mt-2">
+                <h5 className="font-weight-bold">Tổng cộng</h5>
+                <h5 className="font-weight-bold">
+                  {convertPrice(totalPriceMemo)}
+                </h5>
+              </div>
+            </div>
+          </div>
+          <div className="card border-secondary mb-5">
+            <div className="card-header bg-secondary border-0">
+              <h4 className="font-weight-semi-bold m-0">
+                Phương thức thanh toán
+              </h4>
+            </div>
+            <div className="card-body">
+              <div className="form-group">
+                <div className="custom-control custom-radio">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    name="payment"
+                    id="paypal"
+                    checked={payment === "paypal"}
+                    onChange={() => setPayment("paypal")} // Cập nhật trạng thái payment
+                  />
+                  <label className="custom-control-label" htmlFor="paypal">
+                    Paypal
+                  </label>
+                </div>
+              </div>
+              <div className="form-group">
+                <div className="custom-control custom-radio">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    name="payment"
+                    id="vnpay"
+                    checked={payment === "vnpay"}
+                    onChange={() => setPayment("vnpay")} // Cập nhật trạng thái payment
+                  />
+                  <label className="custom-control-label" htmlFor="vnpay">
+                    VNPAY
+                  </label>
+                </div>
+              </div>
+              <div className="form-group">
+                <div className="custom-control custom-radio">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    name="payment"
+                    id="directcheck"
+                    checked={payment === "directcheck"}
+                    onChange={() => setPayment("directcheck")} // Cập nhật trạng thái payment
+                  />
+                  <label className="custom-control-label" htmlFor="directcheck">
+                    Direct Check
+                  </label>
+                </div>
+              </div>
+              <div className="form-group">
+                <div className="custom-control custom-radio">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    name="payment"
+                    id="banktransfer"
+                    checked={payment === "banktransfer"}
+                    onChange={() => setPayment("banktransfer")} // Cập nhật trạng thái payment
+                  />
+                  <label
+                    className="custom-control-label"
+                    htmlFor="banktransfer"
+                  >
+                    Bank Transfer
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="card-footer border-secondary bg-transparent">
+              {/* Hiển thị phần thanh toán PayPal */}
               {payment === "paypal" ? (
                 <div style={{ width: "320px" }}>
                   <PayPalScriptProvider options={{ "client-id": "test" }}>
@@ -357,98 +421,36 @@ const PaymentPage = () => {
                   </PayPalScriptProvider>
                 </div>
               ) : payment === "vnpay" ? (
+                // Tùy chọn thanh toán VNPAY
                 <ButtonComponent
                   size={40}
                   styleButton={{
-                    background: 'rgb(16, 135, 255)',
-                    height: '48px',
-                    width: '320px',
-                    border: 'none',
-                    borderRadius: '4px',
+                    background: "rgb(16, 135, 255)",
+                    height: "48px",
+                    width: "320px",
+                    border: "none",
+                    borderRadius: "4px",
                   }}
-                  textButton={'Thanh toán với VNPAY'}
-                  styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                  textButton={"Thanh toán với VNPAY"}
+                  styleTextButton={{
+                    color: "#fff",
+                    fontSize: "15px",
+                    fontWeight: "700",
+                  }}
                 />
               ) : (
-                <ButtonComponent
-                  onClick={() => handleAddOrder()}
-                  size={40}
-                  styleButton={{
-                    background: 'rgb(255, 57, 69)',
-                    height: '48px',
-                    width: '320px',
-                    border: 'none',
-                    borderRadius: '4px',
-                  }}
-                  textButton={'Đặt hàng'}
-                  styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-                />
+                // Nút đặt hàng khi không có tùy chọn thanh toán
+                <button
+                  className="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3"
+                  onClick={handleAddOrder}
+                >
+                  Đặt hàng
+                </button>
               )}
-            </WrapperRight>
+            </div>
           </div>
         </div>
-        <ModalComponent
-          title="Cập nhật thông tin giao hàng"
-          open={isOpenModalUpdateInfo}
-          onCancel={handleCancleUpdate}
-          onOk={handleUpdateInforUser}
-        >
-          <Loading isPending={isPending}>
-            <Form
-              name="basic"
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
-              autoComplete="on"
-              form={form}
-            >
-              <Form.Item
-                label="Name"
-                name="name"
-                rules={[{ required: true, message: "Please input your name!" }]}
-              >
-                <InputComponent
-                  value={stateUserDetails["name"]}
-                  onChange={handleOnchangeDetails}
-                  name="name"
-                />
-              </Form.Item>
-              <Form.Item
-                label="City"
-                name="city"
-                rules={[{ required: true, message: "Please input your city!" }]}
-              >
-                <InputComponent
-                  value={stateUserDetails["city"]}
-                  onChange={handleOnchangeDetails}
-                  name="city"
-                />
-              </Form.Item>
-              <Form.Item
-                label="Phone"
-                name="phone"
-                rules={[{ required: true, message: "Please input your phone!" }]}
-              >
-                <InputComponent
-                  value={stateUserDetails.phone}
-                  onChange={handleOnchangeDetails}
-                  name="phone"
-                />
-              </Form.Item>
-              <Form.Item
-                label="Address"
-                name="address"
-                rules={[{ required: true, message: "Please input your address!" }]}
-              >
-                <InputComponent
-                  value={stateUserDetails.address}
-                  onChange={handleOnchangeDetails}
-                  name="address"
-                />
-              </Form.Item>
-            </Form>
-          </Loading>
-        </ModalComponent>
-      </Loading>
+      </div>
     </div>
   );
 };
