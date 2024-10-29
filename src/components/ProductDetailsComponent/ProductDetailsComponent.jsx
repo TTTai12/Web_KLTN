@@ -1,25 +1,6 @@
 import React, { useState } from "react";
 import { Row, Col, Image, Rate, Card } from "antd";
-import {
-  WrapperStyleNameProduct,
-  WrapperStyleTextSell,
-  WrapperPriceProduct,
-  WrapperPriceTextProduct,
-  WrapperAddressProduct,
-  WrapperQualityProduct,
-  WrapperInputNumber,
-  WrapperDescriptionProduct,
-  DropdownContent,
-  DropdownToggle,
-} from "./style";
-import {
-  MinusOutlined,
-  PlusOutlined,
-  StarFilled,
-  DownOutlined,
-  UpOutlined,
-} from "@ant-design/icons";
-import ButtonComponent from "../ButtonComponent/ButtonComponent";
+
 import * as ProductService from "../../services/ProductService";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../LoadingComponent/Loading";
@@ -576,16 +557,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
               <span className="px-2">You May Also Like</span>
             </h2>
           </div>
-
-          <div className="text-center mb-4">
-            <h2 className="section-title px-5">
-              <span className="px-2">You May Also Like</span>
-            </h2>
-          </div>
           <div className="row px-xl-5">
             <div className="col">
               <div className="owl-carousel related-carousel">
-                {products?.data?.map((product) => (
+                {relatedProducts?.map((product) => (
                   <div className="card product-item border-0" key={product._id}>
                     <div className="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                       <img

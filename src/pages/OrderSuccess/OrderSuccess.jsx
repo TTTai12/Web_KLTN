@@ -60,11 +60,7 @@ const OrderSuccess = () => {
                         }}
                       >
                         <img
-                          src={
-                            order.images && order.images.length > 0
-                              ? order.images[0]
-                              : undefined
-                          } // Lấy ảnh đầu tiên từ mảng images
+                          src={order.image}  
                           style={{
                             width: "100px",
                             height: "100px",

@@ -21,9 +21,10 @@ import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import FooterComponent from "../../components/FooterComponent/FooterComponent";
 
 const OrderPage = () => {
+  const [typeProducts, setTypeProducts] = useState([]);
   const order = useSelector((state) => state.order);
   const user = useSelector((state) => state.user);
-  const [typeProducts, setTypeProducts] = useState([]);
+
   const [listChecked, setListChecked] = useState([]);
   const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false);
   const [stateUserDetails, setStateUserDetails] = useState({
@@ -346,14 +347,7 @@ const OrderPage = () => {
                         value={item.product}
                         checked={listChecked.includes(item.product)}
                       />
-                      <img
-                        src={
-                          item.images && item.images.length > 0
-                            ? item.images[0]
-                            : undefined
-                        } 
-                        style={{ width: "50px" }}
-                      />{" "}
+                      <img src={item.image} style={{ width: "50px" }} />{" "}
                       {item.name}
                     </td>
                     <td className="align-middle">{convertPrice(item.price)}</td>
