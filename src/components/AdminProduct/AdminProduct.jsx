@@ -40,6 +40,7 @@ const AdminProduct = () => {
     newType: "",
     discount: "",
     information: "",
+    gender: "",
   });
   const [stateProduct, setStateProduct] = useState(inittial());
   const [stateProductDetails, setStateProductDetails] = useState(inittial());
@@ -57,6 +58,7 @@ const AdminProduct = () => {
       countInStock,
       information,
       discount,
+      gender,
     } = data;
     const res = ProductService.createProduct({
       name,
@@ -68,6 +70,7 @@ const AdminProduct = () => {
       countInStock,
       discount,
       information,
+      gender,
     });
     return res;
   });
@@ -104,6 +107,7 @@ const AdminProduct = () => {
         rating: res?.data?.rating,
         images: res?.data?.images, // Thay đổi từ 'image' thành 'images'
         type: res?.data?.type,
+        gender: res?.data?.gender,
         countInStock: res?.data?.countInStock,
         discount: res?.data?.discount,
         information: res?.data?.information,
@@ -310,24 +314,34 @@ const AdminProduct = () => {
       },
     },
     {
-      title: "Rating",
-      dataIndex: "rating",
-      sorter: (a, b) => a.rating - b.rating,
+      title: "Gender",
+      dataIndex: "gender",
+      filters: [
+        { text: "Male", value: "male" },
+        { text: "Female", value: "female" },
+        { text: "Other", value: "other" },
+      ],
+      onFilter: (value, record) => record.gender.includes(value),
+    },
+    {
+      title: "Count In Stock",
+      dataIndex: "countInStock",
+      sorter: (a, b) => a.countInStock - b.countInStock,
       filters: [
         {
-          text: ">= 3",
+          text: ">= 10",
           value: ">=",
         },
         {
-          text: "<= 3",
+          text: "<= 10",
           value: "<=",
         },
       ],
       onFilter: (value, record) => {
         if (value === ">=") {
-          return Number(record.rating) >= 3;
+          return record.countInStock >= 10;
         }
-        return Number(record.rating) <= 3;
+        return record.countInStock <= 10;
       },
     },
     {
@@ -352,6 +366,7 @@ const AdminProduct = () => {
       render: renderAction,
     },
   ];
+  
   const dataTable =
     products?.data?.length &&
     products?.data?.map((product) => {
@@ -393,6 +408,7 @@ const AdminProduct = () => {
       rating: "",
       images: [],
       type: "",
+      gender: "",
       countInStock: "",
       information: "",
     });
@@ -432,6 +448,7 @@ const AdminProduct = () => {
       information: "",
       rating: "",
       images: [],
+      gender: "",
       type: "",
       countInStock: "",
       discount: "",
@@ -447,6 +464,7 @@ const AdminProduct = () => {
       information: stateProduct.information,
       rating: stateProduct.rating,
       images: stateProduct.images, // Thay 'image' bằng 'images'
+      gender: stateProduct.gender,
       type:
         stateProduct.type === "add_type"
           ? stateProduct.newType
@@ -599,6 +617,29 @@ const AdminProduct = () => {
                 options={renderOptions(typeProduct?.data?.data)}
               />
             </Form.Item>
+            <Form.Item
+              label="Giới Tính"
+              name="gender"
+              rules={[
+                { required: true, message: "Hãy chọn giới tính sản phẩm" },
+              ]}
+            >
+              <Select
+                value={stateProduct.gender} // Liên kết với stateProduct
+                onChange={(value) => {
+                  setStateProduct((prev) => ({
+                    ...prev,
+                    gender: value, // Cập nhật giá trị gender trong state
+                  }));
+                }}
+                options={[
+                  { value: "Male", label: "Nam" },
+                  { value: "Female", label: "Nữ" },
+                  { value: "Unisex", label: "Unisex" },
+                ]}
+              />
+            </Form.Item>
+
             {stateProduct.type === "add_type" && (
               <Form.Item
                 label="New type"

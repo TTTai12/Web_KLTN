@@ -50,3 +50,16 @@ export const getAllOrder = async (access_token) => {
   })
   return res.data
 }
+export const getRevenue = async (access_token) => {
+  try {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/order/get-revenue`, {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    });
+    return res.data.data.revenue; // Trả về tổng doanh thu từ API
+  } catch (error) {
+    console.error("Lỗi khi lấy tổng doanh thu:", error.message);
+    throw error;
+  }
+};

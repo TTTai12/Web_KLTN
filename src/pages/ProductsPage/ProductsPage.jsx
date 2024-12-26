@@ -18,7 +18,9 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [limit, setLimit] = useState(6);
   const dispatch = useDispatch();
+  const [selectedType, setSelectedType] = useState(null);
   const [typeProducts, setTypeProducts] = useState([]);
   const [panigate, setPanigate] = useState({
     page: 1,
@@ -39,15 +41,16 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
 
   const fetchAllProducts = async (search, page, limit) => {
     setLoading(true);
-    const res = await ProductService.getAllProduct(search, limit);
+    const res = await ProductService.getAllProduct(search, page, limit);
     if (res?.status === "OK") {
       setLoading(false);
       setProducts(res?.data);
-      setPanigate({ ...panigate, total: Math.ceil(res.data.length / limit) }); // Tổng số trang
+      setPanigate({ ...panigate, total: res.total }); // Tổng số sản phẩm từ API
     } else {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchAllProducts(searchDebounce, panigate.page - 1, panigate.limit);
@@ -60,6 +63,10 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
   const onSearch = (e) => {
     setSearch(e.target.value);
     dispatch(searchProductAction(e.target.value)); // Giữ nguyên
+  };
+  const handleFilterByType = (type) => {
+    setSelectedType(type);
+    setLimit(6);
   };
 
   return (
@@ -74,7 +81,7 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
               data-target="#navbar-vertical"
               style={{ height: "65px", marginTop: "-1px", padding: "0 30px" }}
             >
-              <h6 className="m-0">Categories</h6>
+              <h6 className="m-0">Danh mục</h6>
               <i className="fa fa-angle-down text-dark"></i>
             </button>
             <nav
@@ -101,9 +108,9 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
               <a href="" className="text-decoration-none d-block d-lg-none">
                 <h1 className="m-0 display-5 font-weight-semi-bold">
                   <span className="text-primary font-weight-bold border px-3 mr-1">
-                    E
+                    Fashion
                   </span>
-                  Shopper
+                  Shop
                 </h1>
               </a>
               <button
@@ -120,36 +127,12 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
               >
                 <div className="navbar-nav mr-auto py-0">
                   <a href="/" className="nav-item nav-link">
-                    Home
+                    Trang chủ
                   </a>
                   <a href="/products" className="nav-item nav-link active">
-                    Shop
-                  </a>
-                  <a href="detail.html" className="nav-item nav-link">
-                    Shop Detail
-                  </a>
-                  <div className="nav-item dropdown">
-                    <a
-                      href="#"
-                      className="nav-link dropdown-toggle"
-                      data-toggle="dropdown"
-                    >
-                      Pages
-                    </a>
-                    <div className="dropdown-menu rounded-0 m-0">
-                      <a href="cart.html" className="dropdown-item">
-                        Shopping Cart
-                      </a>
-                      <a href="checkout.html" className="dropdown-item">
-                        Checkout
-                      </a>
-                    </div>
-                  </div>
-                  <a href="contact.html" className="nav-item nav-link">
-                    Contact
+                    Sản phẩm
                   </a>
                 </div>
-                
               </div>
             </nav>
           </div>
@@ -163,14 +146,14 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
           style={{ minHeight: "300px" }}
         >
           <h1 className="font-weight-semi-bold text-uppercase mb-3">
-            Our Shop
+            Fashion Shop
           </h1>
           <div className="d-inline-flex">
             <p className="m-0">
-              <a href="/">Home</a>
+              <a href="/">Trang chủ</a>
             </p>
             <p className="m-0 px-2">-</p>
-            <p className="m-0">Shop</p>
+            <p className="m-0">Sản phẩm</p>
           </div>
         </div>
       </div>
@@ -201,20 +184,20 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
-                      Sort by
+                      sắp xếp theo
                     </button>
                     <div
                       className="dropdown-menu dropdown-menu-right"
                       aria-labelledby="triggerId"
                     >
                       <a className="dropdown-item" href="#">
-                        Latest
+                        Mới nhất
                       </a>
                       <a className="dropdown-item" href="#">
-                        Popularity
+                        Phổ biến nhất
                       </a>
                       <a className="dropdown-item" href="#">
-                        Best Rating
+                        Đánh giá cao nhất
                       </a>
                     </div>
                   </div>
@@ -243,6 +226,7 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
                     price={product.price}
                     rating={product.rating}
                     type={product.type}
+                    gender={product.gender}
                     selled={product.selled}
                     discount={product.discount}
                     id={product._id} // Sử dụng spread operator để truyền props
@@ -253,7 +237,7 @@ const ProductsPage = ({ isHiddenSearch = false }) => {
                 <Pagination
                   current={panigate.page}
                   pageSize={panigate.limit}
-                  total={panigate.total * panigate.limit} // Tổng số sản phẩm
+                  total={panigate.total} // Tổng số sản phẩm
                   onChange={onChange}
                   style={{ textAlign: "center", marginTop: "10px" }}
                 />

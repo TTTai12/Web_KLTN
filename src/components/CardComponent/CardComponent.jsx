@@ -66,14 +66,14 @@ const CardComponent = (props) => {
             onClick={() => handleDetailsProduct(id)}
             className="btn btn-sm text-dark p-0"
           >
-            <i className="fas fa-eye text-primary mr-1"></i>View Detail
+            <i className="fas fa-eye text-primary mr-1"></i>Xem chi tiết
           </a>
           <button
             onClick={handleAddOrderProduct} // Gọi hàm thêm sản phẩm vào giỏ hàng
             className="btn btn-sm text-dark p-0"
           >
             <i className="fas fa-shopping-cart text-primary mr-1"></i>
-            Add To Cart
+            Thêm vào giỏ hàng
           </button>
         </div>
       </div>

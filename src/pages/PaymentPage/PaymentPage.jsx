@@ -1,14 +1,5 @@
 import { Form, Radio } from "antd";
 import React, { useEffect, useState, useMemo } from "react";
-import {
-  Label,
-  WrapperInfo,
-  WrapperLeft,
-  WrapperRadio,
-  WrapperRight,
-  WrapperTotal,
-  WrapperStyleHeaderDelivery,
-} from "./style";
 
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import { useDispatch, useSelector } from "react-redux";
@@ -58,17 +49,6 @@ const PaymentPage = () => {
       });
     }
   }, [user]);
-
-  // useEffect(() => {
-  //   if (isOpenModalUpdateInfo) {
-  //     setStateUserDetails({
-  //       city: user?.city,
-  //       name: user?.name,
-  //       address: user?.address,
-  //       phone: user?.phone,
-  //     });
-  //   }
-  // }, [isOpenModalUpdateInfo]);
 
   const handleChangeAddress = () => {
     setIsOpenModalUpdateInfo(true);
@@ -178,17 +158,6 @@ const PaymentPage = () => {
     }
   }, [isSuccess, isError]);
 
-  const handleCancleUpdate = () => {
-    setStateUserDetails({
-      name: "",
-      email: "",
-      phone: "",
-      isAdmin: false,
-    });
-    form.resetFields();
-    setIsOpenModalUpdateInfo(false);
-  };
-
   const onSuccessPaypal = (details, data) => {
     mutationAddOrder.mutate({
       token: user?.access_token,
@@ -208,34 +177,11 @@ const PaymentPage = () => {
     });
   };
 
-  const handleUpdateInforUser = () => {
-    const { name, address, city, phone } = stateUserDetails;
-    if (name && address && city && phone) {
-      mutationUpdate.mutate(
-        { id: user?.id, token: user?.access_token, ...stateUserDetails },
-        {
-          onSuccess: () => {
-            dispatch(updateUser({ name, address, city, phone }));
-            setIsOpenModalUpdateInfo(false);
-          },
-        }
-      );
-    }
-  };
-
   const handleOnchangeDetails = (e) => {
     setStateUserDetails({
       ...stateUserDetails,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleDelivery = (e) => {
-    setDelivery(e.target.value);
-  };
-
-  const handlePayment = (e) => {
-    setPayment(e.target.value);
   };
 
   return (
@@ -300,10 +246,25 @@ const PaymentPage = () => {
                     key={item.product.id}
                     className="d-flex justify-content-between mb-3"
                   >
-                    <p>{item.name}</p>
+                    <div className="d-flex align-items-center">
+                      <img
+                        src={item.image} // Hiển thị ảnh đầu tiên trong danh sách ảnh
+                        alt={item.name}
+                        style={{
+                          width: "70px",
+                          height: "70px",
+                          objectFit: "cover",
+                          marginRight: "10px",
+                          border: "1px solid rgb(238, 238, 238)",
+                          padding: "2px",
+                        }}
+                      />
+                      <p>{item.name}</p>
+                    </div>
                     <p>{convertPrice(item.price)}</p>
                   </div>
                 ))}
+
               <div className="d-flex justify-content-between mb-3 pt-1">
                 <span className="font-weight-medium">Tạm tính</span>
                 <span className="font-weight-medium">
@@ -343,28 +304,14 @@ const PaymentPage = () => {
                     name="payment"
                     id="paypal"
                     checked={payment === "paypal"}
-                    onChange={() => setPayment("paypal")} // Cập nhật trạng thái payment
+                    onChange={() => setPayment("paypal")}
                   />
                   <label className="custom-control-label" htmlFor="paypal">
                     Paypal
                   </label>
                 </div>
               </div>
-              <div className="form-group">
-                <div className="custom-control custom-radio">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    name="payment"
-                    id="vnpay"
-                    checked={payment === "vnpay"}
-                    onChange={() => setPayment("vnpay")} // Cập nhật trạng thái payment
-                  />
-                  <label className="custom-control-label" htmlFor="vnpay">
-                    VNPAY
-                  </label>
-                </div>
-              </div>
+            
               <div className="form-group">
                 <div className="custom-control custom-radio">
                   <input
@@ -376,7 +323,7 @@ const PaymentPage = () => {
                     onChange={() => setPayment("directcheck")} // Cập nhật trạng thái payment
                   />
                   <label className="custom-control-label" htmlFor="directcheck">
-                    Direct Check
+                    Thanh toán khi nhận hàng
                   </label>
                 </div>
               </div>
@@ -394,16 +341,19 @@ const PaymentPage = () => {
                     className="custom-control-label"
                     htmlFor="banktransfer"
                   >
-                    Bank Transfer
+                    Chuyễn khoản
                   </label>
                 </div>
               </div>
-            </div>
-            <div className="card-footer border-secondary bg-transparent">
-              {/* Hiển thị phần thanh toán PayPal */}
-              {payment === "paypal" ? (
-                <div style={{ width: "320px" }}>
-                  <PayPalScriptProvider options={{ "client-id": "test" }}>
+              <div className="card-footer border-secondary bg-transparent">
+                {/* Hiển thị phần thanh toán PayPal */}
+                {payment === "paypal" ? (
+                  <PayPalScriptProvider
+                  options={{
+                    "client-id": "AR8L-eQxPDTrIIgMSgzE2F_Y46MRtzzEmUDYZl7ZC-TGAJpMDX--8Oyt11PfLmEk5UAHEBTC0Pouhbnw",
+                    components: "buttons",
+                  }}
+                >
                     <PayPalButtons
                       createOrder={(data, actions) =>
                         actions.order.create({
@@ -417,36 +367,21 @@ const PaymentPage = () => {
                         })
                       }
                       onApprove={onSuccessPaypal}
+                      onError={(err) =>
+                        message.error("Thanh toán PayPal thất bại!")
+                      }
+                      onCancel={() => message.warning("Đã hủy thanh toán.")}
                     />
                   </PayPalScriptProvider>
-                </div>
-              ) : payment === "vnpay" ? (
-                // Tùy chọn thanh toán VNPAY
-                <ButtonComponent
-                  size={40}
-                  styleButton={{
-                    background: "rgb(16, 135, 255)",
-                    height: "48px",
-                    width: "320px",
-                    border: "none",
-                    borderRadius: "4px",
-                  }}
-                  textButton={"Thanh toán với VNPAY"}
-                  styleTextButton={{
-                    color: "#fff",
-                    fontSize: "15px",
-                    fontWeight: "700",
-                  }}
-                />
-              ) : (
-                // Nút đặt hàng khi không có tùy chọn thanh toán
-                <button
-                  className="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3"
-                  onClick={handleAddOrder}
-                >
-                  Đặt hàng
-                </button>
-              )}
+                ) : (
+                  <button
+                    className="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3"
+                    onClick={handleAddOrder}
+                  >
+                    Đặt hàng
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

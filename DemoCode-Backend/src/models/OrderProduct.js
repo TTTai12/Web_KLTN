@@ -6,7 +6,7 @@ const orderSchema = new mongoose.Schema(
       {
         name: { type: String, required: true },
         amount: { type: Number, required: true },
-        images: { type: [String], required: true }, // Đã thay đổi thành mảng images
+        images: { type: [String], required: true }, // Mảng hình ảnh
         price: { type: Number, required: true },
         discount: { type: Number },
         product: {
@@ -14,6 +14,8 @@ const orderSchema = new mongoose.Schema(
           ref: "Product",
           required: true,
         },
+        size: { type: String, required: true }, // Thêm trường size
+        color: { type: String, required: true }, // Thêm trường color
       },
     ],
     shippingAddress: {
@@ -25,12 +27,14 @@ const orderSchema = new mongoose.Schema(
     paymentMethod: { type: String, required: true },
     itemsPrice: { type: Number, required: true },
     shippingPrice: { type: Number, required: true },
-    totalPrice: { type: Number, required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     isPaid: { type: Boolean, default: false },
     paidAt: { type: Date },
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Date },
+    totalPrice: { type: Number, required: true },
+    // Có thể thêm trường này nếu muốn lưu tổng doanh thu hoặc giá trị cụ thể
+    revenue: { type: Number, default: 0 },
   },
   {
     timestamps: true,

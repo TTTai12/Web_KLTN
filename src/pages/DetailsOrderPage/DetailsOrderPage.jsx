@@ -75,7 +75,7 @@ const DetailsOrderPage = () => {
         {data?.orderItems?.map((order, index) => (
           <WrapperProduct key={index}>
             <WrapperNameProduct>
-              <img src={order?.image} 
+              {/* <img src={order?.image} 
                 style={{
                   width: '70px', 
                   height: '70px', 
@@ -83,7 +83,7 @@ const DetailsOrderPage = () => {
                   border: '1px solid rgb(238, 238, 238)',
                   padding: '2px'
                 }}
-              />
+              /> */}
               <div style={{
                 width: 260,
                 overflow: 'hidden',
@@ -91,7 +91,7 @@ const DetailsOrderPage = () => {
                 whiteSpace:'nowrap',
                 marginLeft: '10px',
                 height: '70px',
-              }}>{order?.productName || "Sản phẩm"}</div>
+              }}>{order?.name|| "Sản phẩm"}</div>
             </WrapperNameProduct>
             <WrapperItem>{convertPrice(order?.price)}</WrapperItem>
             <WrapperItem>{order?.amount}</WrapperItem>

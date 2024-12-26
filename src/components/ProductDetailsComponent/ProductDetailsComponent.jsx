@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Image, Rate, Card } from "antd";
-
 import * as ProductService from "../../services/ProductService";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../LoadingComponent/Loading";
@@ -9,8 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import { useLocation, useNavigate } from "react-router-dom";
 import { addOrderProduct } from "../../redux/slides/orderSlide";
+import AdminReview from "../../components/Adminreview/Adminreview"
+import ProductReviews from "../../components/ProductReviews/ProductReviews";
 
-const ProductDetailsComponent = ({ idProduct }) => {
+const ProductDetailsComponent = ({ idProduct, userRole }) => {
+  const productId = idProduct;
   const [numProduct, setNumProduct] = useState(1);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const user = useSelector((state) => state.user);
@@ -20,6 +22,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
 
   const onChange = (value) => {
     setNumProduct(Number(value));
@@ -50,15 +54,20 @@ const ProductDetailsComponent = ({ idProduct }) => {
     queryFn: fetchGetDetailsProduct,
     enabled: !!idProduct,
   });
-
+  // Danh sách các ảnh từ productDetails
+  const productImages = productDetails?.images || [];
   const handleAddOrderProduct = () => {
     if (!user?.id) {
       navigate("/sign-in", { state: location?.pathname });
+    } else if (!selectedSize || !selectedColor) {
+      alert("Vui lòng chọn size và màu sắc!");
     } else {
       const orderRedux = order?.orderItems?.find(
         (item) => item.product === productDetails?._id
       );
-      if (
+      if (productDetails?.countInStock === 0) {
+        alert("Sản phẩm đã hết hàng!");
+      } else if (
         orderRedux?.amount + numProduct <= orderRedux?.countInstock ||
         (!orderRedux && productDetails?.countInStock > 0)
       ) {
@@ -67,39 +76,44 @@ const ProductDetailsComponent = ({ idProduct }) => {
             orderItem: {
               name: productDetails?.name,
               amount: numProduct,
-              image: productDetails?.image,
+              image: productDetails?.images[0], // Đảm bảo ảnh đầu tiên từ mảng images được gán vào trường image
               price: productDetails?.price,
               product: productDetails?._id,
               discount: productDetails?.discount,
               countInstock: productDetails?.countInStock,
+              size: selectedSize,
+              color: selectedColor,
             },
           })
         );
+        console.log(order?.orderItems); // Kiểm tra giá trị của orderItems sau khi thêm
       } else {
         setErrorLimitOrder(true);
       }
     }
   };
+  
+  
+  
 
-  const fetchGetRelatedProducts = async (context) => {
-    const id = context?.queryKey && context?.queryKey[1];
-    if (id) {
-      const res = await ProductService.getRelatedProducts(id);
-      return res.data;
-    }
-  };
+  // const fetchGetRelatedProducts = async (context) => {
+  //   const id = context?.queryKey && context?.queryKey[1];
+  //   if (id) {
+  //     const res = await ProductService.getRelatedProducts(id);
+  //     return res.data;
+  //   }
+  // };
 
-  const { isPending: isRelatedLoading, data: relatedProducts } = useQuery({
-    queryKey: ["related-products", idProduct],
-    queryFn: fetchGetRelatedProducts,
-    enabled: !!idProduct,
-  });
+  // const { isPending: isRelatedLoading, data: relatedProducts } = useQuery({
+  //   queryKey: ["related-products", idProduct],
+  //   queryFn: fetchGetRelatedProducts,
+  //   enabled: !!idProduct,
+  // });
 
   // State để quản lý chỉ số của ảnh hiện tại
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isThumbnailClicked, setIsThumbnailClicked] = useState(false);
-  // Danh sách các ảnh từ productDetails
-  const productImages = productDetails?.images || [];
+
 
   // Hàm xử lý khi nhấn vào ảnh
   const handleImageClick = (index) => {
@@ -110,6 +124,16 @@ const ProductDetailsComponent = ({ idProduct }) => {
     setIsThumbnailClicked(false); // Quay lại ảnh chính
     setCurrentImageIndex(0); // Trở lại ảnh đầu tiên
   };
+
+  const handleSizeChange = (e) => {
+    setSelectedSize(e.target.value);
+  };
+
+  const handleColorChange = (e) => {
+    setSelectedColor(e.target.value);
+  };
+  // phần review
+ 
   return (
     <Loading isPending={isPending}>
       <div className="container-fluid py-5">
@@ -172,21 +196,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
                   </div>
                 </div>
 
-                {/* Các điều khiển carousel */}
-                <a
-                  className="carousel-control-prev"
-                  href="#product-carousel"
-                  data-slide="prev"
-                >
-                  <i className="fa fa-2x fa-angle-left text-dark"></i>
-                </a>
-                <a
-                  className="carousel-control-next"
-                  href="#product-carousel"
-                  data-slide="next"
-                >
-                  <i className="fa fa-2x fa-angle-right text-dark"></i>
-                </a>
               </div>
             </div>
           </div>
@@ -209,124 +218,59 @@ const ProductDetailsComponent = ({ idProduct }) => {
               {convertPrice(productDetails?.price)}
             </h3>
             <p className="mb-4">{productDetails?.description}</p>
+
             <div className="d-flex mb-3">
-              <p className="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
+              <p className="text-dark font-weight-medium mb-0 mr-3">Kích thước:</p>
               <form>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-1"
-                    name="size"
-                  />
-                  <label className="custom-control-label" htmlFor="size-1">
-                    XS
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-2"
-                    name="size"
-                  />
-                  <label className="custom-control-label" htmlFor="size-2">
-                    S
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-3"
-                    name="size"
-                  />
-                  <label className="custom-control-label" htmlFor="size-3">
-                    M
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-4"
-                    name="size"
-                  />
-                  <label className="custom-control-label" htmlFor="size-4">
-                    L
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-5"
-                    name="size"
-                  />
-                  <label className="custom-control-label" htmlFor="size-5">
-                    XL
-                  </label>
-                </div>
+                {["XS", "S", "M", "L", "XL"].map((size, index) => (
+                  <div
+                    className="custom-control custom-radio custom-control-inline"
+                    key={index}
+                  >
+                    <input
+                      type="radio"
+                      className="custom-control-input"
+                      id={`size-${index}`}
+                      name="size"
+                      value={size}
+                      onChange={handleSizeChange}
+                    />
+                    <label
+                      className="custom-control-label"
+                      htmlFor={`size-${index}`}
+                    >
+                      {size}
+                    </label>
+                  </div>
+                ))}
               </form>
             </div>
             <div className="d-flex mb-4">
-              <p className="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
+              <p className="text-dark font-weight-medium mb-0 mr-3">Màu sắc:</p>
               <form>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-1"
-                    name="color"
-                  />
-                  <label className="custom-control-label" htmlFor="color-1">
-                    Black
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-2"
-                    name="color"
-                  />
-                  <label className="custom-control-label" htmlFor="color-2">
-                    White
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-3"
-                    name="color"
-                  />
-                  <label className="custom-control-label" htmlFor="color-3">
-                    Red
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-4"
-                    name="color"
-                  />
-                  <label className="custom-control-label" htmlFor="color-4">
-                    Blue
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-5"
-                    name="color"
-                  />
-                  <label className="custom-control-label" htmlFor="color-5">
-                    Green
-                  </label>
-                </div>
+                {["Đen", "Trắng", "Đỏ", "Xanh da trời", "Xanh lá"].map(
+                  (color, index) => (
+                    <div
+                      className="custom-control custom-radio custom-control-inline"
+                      key={index}
+                    >
+                      <input
+                        type="radio"
+                        className="custom-control-input"
+                        id={`color-${index}`}
+                        name="color"
+                        value={color}
+                        onChange={handleColorChange}
+                      />
+                      <label
+                        className="custom-control-label"
+                        htmlFor={`color-${index}`}
+                      >
+                        {color}
+                      </label>
+                    </div>
+                  )
+                )}
               </form>
             </div>
 
@@ -405,30 +349,30 @@ const ProductDetailsComponent = ({ idProduct }) => {
                 data-toggle="tab"
                 href="#tab-pane-1"
               >
-                Description
+                Mô tả
               </a>
               <a
                 className="nav-item nav-link"
                 data-toggle="tab"
                 href="#tab-pane-2"
               >
-                Information
+                Thông tin
               </a>
               <a
                 className="nav-item nav-link"
                 data-toggle="tab"
                 href="#tab-pane-3"
               >
-                Reviews (0)
+               Đánh giá
               </a>
             </div>
             <div className="tab-content">
               <div className="tab-pane fade show active" id="tab-pane-1">
-                <h4 className="mb-3">Product Description</h4>
+                <h4 className="mb-3">Mô tả sản phẩm</h4>
                 <p>{productDetails?.description}</p>
               </div>
               <div className="tab-pane fade" id="tab-pane-2">
-                <h4 className="mb-3">Additional Information</h4>
+                <h4 className="mb-3">Thông tin sản phẩm</h4>
                 <p>{productDetails?.information}</p>
                 <div className="row">
                   <div className="col-md-6">
@@ -464,94 +408,30 @@ const ProductDetailsComponent = ({ idProduct }) => {
               {/* review */}
               <div className="tab-pane fade" id="tab-pane-3">
                 <div className="row">
-                  <div className="col-md-6">
+                  {/* hiện reviews */}
+                  {/* <div className="col-md-6">
                     <h4 className="mb-4">
-                      1 review for "Colorful Stylish Shirt"
+                      {reviews.length} review{reviews.length > 1 ? "s" : ""} for
+                      "Colorful Stylish Shirt"
                     </h4>
-                    <div className="media mb-4">
-                      <img
-                        src="img/user.jpg"
-                        alt="Image"
-                        className="img-fluid mr-3 mt-1"
-                        style={{ width: "45px" }}
-                      />
-                      <div className="media-body">
-                        <h6>
-                          John Doe
-                          <small>
-                            {" "}
-                            - <i>01 Jan 2045</i>
-                          </small>
-                        </h6>
-                        <div className="text-primary mb-2">
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star-half-alt"></i>
-                          <i className="far fa-star"></i>
-                        </div>
-                        <p>
-                          Diam amet duo labore stet elitr ea clita ipsum, tempor
-                          labore accusam ipsum et no at. Kasd diam tempor rebum
-                          magna dolores sed sed eirmod ipsum.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <h4 className="mb-4">Leave a review</h4>
-                    <small>
-                      Your email address will not be published. Required fields
-                      are marked *
-                    </small>
-                    <div className="d-flex my-3">
-                      <p className="mb-0 mr-2">Your Rating * :</p>
-                      <div className="text-primary">
-                        <i className="far fa-star"></i>
-                        <i className="far fa-star"></i>
-                        <i className="far fa-star"></i>
-                        <i className="far fa-star"></i>
-                        <i className="far fa-star"></i>
-                      </div>
-                    </div>
-                    <form>
-                      <div className="form-group">
-                        <label htmlFor="message">Your Review *</label>
-                        <textarea
-                          id="message"
-                          cols="30"
-                          rows="5"
-                          className="form-control"
-                        ></textarea>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="name">Your Name *</label>
-                        <input type="text" className="form-control" id="name" />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="email">Your Email *</label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          id="email"
-                        />
-                      </div>
-                      <div className="form-group mb-0">
-                        <input
-                          type="submit"
-                          value="Leave Your Review"
-                          className="btn btn-primary px-3"
-                        />
-                      </div>
-                    </form>
-                  </div>
+                    {reviews.length > 0 ? (
+                      reviews.map((review) => (
+                        <ReviewItem key={review.id} review={review} />
+                      ))
+                    ) : (
+                      <p>No reviews yet.</p>
+                    )}
+                  </div> */}
+                  {/* thêm review */}
+                  <ProductReviews productId={productId }/>
+                  {userRole === "admin" && <AdminReview productId={productId} />}
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="container-fluid py-5">
+        {/* <div className="container-fluid py-5">
           <div className="text-center mb-4">
             <h2 className="section-title px-5">
               <span className="px-2">You May Also Like</span>
@@ -603,7 +483,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </Loading>
   );

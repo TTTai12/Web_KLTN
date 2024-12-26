@@ -14,7 +14,7 @@ fas fa-box-open"
       ></i>
     ),
     getItem("Đơn hàng", "orders", <i className="fas fa-shopping-cart"></i>),
-    getItem("Thông báo", "notifications", <i className="fas fa-bell"></i>),
+    getItem("Đánh giá", "review", <i className="fas fa-bell"></i>),
     getItem("Settings", "settings", <i className="fas fa-cog"></i>),
   ];
 

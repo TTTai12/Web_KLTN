@@ -220,7 +220,7 @@ const SignUpPage = () => {
                     cursor: "pointer",
                   }}
                 >
-                  {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
+               
                 </span>
               </div>
 

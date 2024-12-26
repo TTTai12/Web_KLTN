@@ -15,10 +15,10 @@ export const getAllProduct = async (search, limit) => {
   return res.data;
 };
 
-export const getProductType = async (type, page, limit) => {
+export const getProductType = async (type, gender, page, limit) => {
   if (type) {
     const res = await axios.get(
-      `${process.env.REACT_APP_API_URL}/product/get-all?filter=type&filter=${type}&limit=${limit}&page=${page}`
+      `${process.env.REACT_APP_API_URL}/product/get-all?filter=type&filter=${type}&gender=${gender}&limit=${limit}&page=${page}`
     );
     return res.data;
   }
@@ -83,9 +83,11 @@ export const getAllTypeProduct = async () => {
   );
   return res.data;
 };
+
 export const getRelatedProducts = async (idProduct) => {
   const res = await axios.get(
     `${process.env.REACT_APP_API_URL}/product/related/${idProduct}`
   );
   return res.data;
 };
+

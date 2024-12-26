@@ -85,7 +85,7 @@ const SignInPage = () => {
           <div className="wrap-login100">
             <form className="login100-form validate-form">
               <span className="login100-form-title p-b-43">
-                Login to continue
+                ĐĂNG NHẬP
               </span>
 
               <div
@@ -113,7 +113,7 @@ const SignInPage = () => {
                   onChange={handleOnchangePassword}
                 />
                 <span className="focus-input100"></span>
-                <span className="label-input100">Password</span>
+                <span className="label-input100">Mật khẩu</span>
                 <span
                   className="toggle-password"
                   onClick={() => setIsShowPassword(!isShowPassword)} // Đổi trạng thái isShowPassword khi click

@@ -12,7 +12,6 @@ import FooterComponent from "../../components/FooterComponent/FooterComponent";
 import { searchProduct as searchProductAction } from "../../redux/slides/productSlide";
 import { useDispatch, useSelector } from "react-redux";
 import ButttonInputSearchNavbar from "../../components/ButtonInputSearchNavbar/ButtonInputSearchNavbar";
-
 const TypeProductPage = ({ isHiddenSearch = false }) => {
   const searchProduct = useSelector((state) => state?.product?.search);
   const searchDebounce = useDebounce(searchProduct, 500);
@@ -21,31 +20,42 @@ const TypeProductPage = ({ isHiddenSearch = false }) => {
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [selectedType, setSelectedType] = useState(null);
+  const [selectedGender, setSelectedGender] = useState(state?.gender || null);
   const [typeProducts, setTypeProducts] = useState([]);
-  const [panigate, setPanigate] = useState({
-    page: 1, // Start with page 1
-    limit: 10,
-    total: 1,
-  });
-
-  const fetchProductType = async (type, page, limit) => {
+  const [limit, setLimit] = useState(6);
+  const [panigate, setPanigate] = useState({ page: 1, limit: 10, total: 1 });
+  const handleFilterByType = (type, gender) => {
+    setSelectedType(type);
+    setSelectedGender(gender);
+    setLimit(6);
+  };
+  const fetchProductType = async (type, gender, page, limit) => {
     setLoading(true);
-    const res = await ProductService.getProductType(type, page, limit);
+    const res = await ProductService.getProductType(type, gender, page, limit);
     if (res?.status === "OK") {
       setLoading(false);
       setProducts(res?.data);
       setPanigate({ ...panigate, total: res?.totalPage });
     } else {
       setLoading(false);
+      console.error(res?.message || "Error fetching products");
     }
   };
-
   useEffect(() => {
-    if (state) {
-      fetchProductType(state, panigate.page - 1, panigate.limit);
+    console.log("State Type:", state?.type);
+    console.log("State Gender:", state?.gender);
+    if (state?.type && state?.gender) {
+      fetchProductType(
+        state.type,
+        state.gender,
+        panigate.page - 1,
+        panigate.limit
+      );
+    } else {
+      setProducts([]);
     }
   }, [state, panigate.page, panigate.limit]);
-
   const onChange = (page, pageSize) => {
     setPanigate({ ...panigate, page, limit: pageSize });
   };
@@ -55,7 +65,6 @@ const TypeProductPage = ({ isHiddenSearch = false }) => {
       setTypeProducts(res?.data);
     }
   };
-
   useEffect(() => {
     fetchAllTypeProduct();
   }, []);
@@ -65,33 +74,40 @@ const TypeProductPage = ({ isHiddenSearch = false }) => {
   };
   return (
     <Loading isPending={loading}>
-      {/* <!-- NavbarTop Start --> */}
+      {" "}
       <div className="container-fluid">
+        {" "}
         <div className="row border-top px-xl-5">
+          {" "}
           <div className="col-lg-3 d-none d-lg-block">
+            {" "}
             <button
               className="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100"
               data-toggle="collapse"
               data-target="#navbar-vertical"
               style={{ height: "65px", marginTop: "-1px", padding: "0 30px" }}
             >
-              <h6 className="m-0">Categories</h6>
-              <i className="fa fa-angle-down text-dark"></i>
-            </button>
+              {" "}
+              <h6 className="m-0">Danh mục</h6>{" "}
+              <i className="fa fa-angle-down text-dark"></i>{" "}
+            </button>{" "}
             <nav
               className="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light"
               id="navbar-vertical"
               style={{ width: "calc(100% - 30px)", zIndex: 1 }}
             >
+              {" "}
               <div
                 className="navbar-nav w-100 overflow-hidden"
                 style={{ height: "410px" }}
               >
+                {" "}
                 {typeProducts.map((item) => (
                   <TypeProduct
-                    key={item} // Dùng item làm key
-                    name={item} // Gửi tên loại sản phẩm vào TypeProduct
-                    onClick={() => handleFilterByType(item)} // Gọi hàm lọc khi loại sản phẩm được chọn
+                    key={item}
+                    name={item}
+                    gender={selectedGender}
+                    onClick={() => handleFilterByType(item, selectedGender)}
                   />
                 ))}
               </div>
@@ -126,31 +142,7 @@ const TypeProductPage = ({ isHiddenSearch = false }) => {
                   <a href="/products" className="nav-item nav-link active">
                     Shop
                   </a>
-                  <a href="detail.html" className="nav-item nav-link">
-                    Shop Detail
-                  </a>
-                  <div className="nav-item dropdown">
-                    <a
-                      href="#"
-                      className="nav-link dropdown-toggle"
-                      data-toggle="dropdown"
-                    >
-                      Pages
-                    </a>
-                    <div className="dropdown-menu rounded-0 m-0">
-                      <a href="cart.html" className="dropdown-item">
-                        Shopping Cart
-                      </a>
-                      <a href="checkout.html" className="dropdown-item">
-                        Checkout
-                      </a>
-                    </div>
-                  </div>
-                  <a href="contact.html" className="nav-item nav-link">
-                    Contact
-                  </a>
                 </div>
-               
               </div>
             </nav>
           </div>
@@ -164,14 +156,14 @@ const TypeProductPage = ({ isHiddenSearch = false }) => {
           style={{ minHeight: "300px" }}
         >
           <h1 className="font-weight-semi-bold text-uppercase mb-3">
-            Our Shop
+            Fashion Shop
           </h1>
           <div className="d-inline-flex">
             <p className="m-0">
-              <a href="/">Home</a>
+              <a href="/">Trang chủ</a>
             </p>
             <p className="m-0 px-2">-</p>
-            <p className="m-0">Shop</p>
+            <p className="m-0">Danh mục sản phẩm</p>
           </div>
         </div>
       </div>
@@ -179,12 +171,11 @@ const TypeProductPage = ({ isHiddenSearch = false }) => {
       <div class="container-fluid pt-5">
         <div class="row px-xl-5">
           <NavBarComponent />
-
           <div class="col-lg-9 col-md-12">
             <div className="row pb-3">
               <div className="col-12 pb-1">
                 <div className="d-flex align-items-center justify-content-between mb-4">
-                {!isHiddenSearch && (
+                  {!isHiddenSearch && (
                     <ButttonInputSearchNavbar
                       size="large"
                       bordered={false}
@@ -242,6 +233,7 @@ const TypeProductPage = ({ isHiddenSearch = false }) => {
                     description={product.description}
                     images={product.images}
                     name={product.name}
+                    gender={product.gender}
                     price={product.price}
                     rating={product.rating}
                     type={product.type}
@@ -264,7 +256,7 @@ const TypeProductPage = ({ isHiddenSearch = false }) => {
           </div>
         </div>
       </div>
-      <FooterComponent/>
+      <FooterComponent />
     </Loading>
   );
 };

@@ -5018,7 +5018,7 @@ button.close {
 
 .carousel-inner {
   position: relative;
-  width: 100%;
+  /* width: 100%; */
   overflow: hidden;
 }
 
@@ -5303,6 +5303,7 @@ a.bg-dark:focus, a.bg-dark:hover {
 }
 
 .border {
+  margin-left: 95px;
   border: 1px solid #e9ecef !important;
 }
 

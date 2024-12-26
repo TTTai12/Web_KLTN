@@ -5,10 +5,6 @@ import {
   WrapperProducts,
   WrapperTypeProduct,
 } from "./style";
-import slider1 from "../../assets/images/slider1.webp";
-import slider2 from "../../assets/images/slider2.webp";
-import slider3 from "../../assets/images/slider3.webp";
-import SliderComponent from "../../components/SliderComponent/SliderComponent";
 import CardComponent from "../../components/CardComponent/CardComponent";
 import * as ProductService from "../../services/ProductService";
 import { useQuery } from "@tanstack/react-query";
@@ -16,7 +12,7 @@ import Loading from "../../components/LoadingComponent/Loading";
 import { useSelector } from "react-redux";
 import { useDebounce } from "../../hooks/useDebounce";
 import FooterComponent from "../../components/FooterComponent/FooterComponent";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
@@ -24,19 +20,28 @@ const HomePage = () => {
   const [limit, setLimit] = useState(6);
   const [typeProducts, setTypeProducts] = useState([]);
   const [selectedType, setSelectedType] = useState(null);
+  const [selectedGender, setSelectedGender] = useState(null);
   const user = useSelector((state) => state.user);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [panigate, setPanigate] = useState({ page: 1, limit: 10, total: 1 });
   const navigate = useNavigate();
+  const { state } = useLocation();
+
   const handleNavigateLogin = () => {
     navigate("/sign-in");
   };
+
   const handleNavigateRegister = () => {
     navigate("/sign-up");
   };
+
   const fetchProductAll = async (context) => {
     const limit = context?.queryKey[1];
     const search = context?.queryKey[2];
     const type = context?.queryKey[3];
-    const res = await ProductService.getAllProduct(search, limit, type);
+    const gender = context?.queryKey[4];
+    const res = await ProductService.getAllProduct(search, limit, type, gender);
     return res;
   };
 
@@ -48,25 +53,89 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    if (state?.type && state?.gender) {
+      fetchProductType(
+        state.type,
+        state.gender,
+        panigate.page - 1,
+        panigate.limit
+      );
+    } else {
+      setProducts([]);
+    }
+  }, [state, panigate.page, panigate.limit]);
+
+  useEffect(() => {
     fetchAllTypeProduct();
   }, []);
 
   const {
     isPending,
-    data: products,
+    data: productData,
     isPreviousData,
   } = useQuery({
-    queryKey: ["products", limit, searchDebounce, selectedType],
+    queryKey: ["products", limit, searchDebounce, selectedType, selectedGender],
     queryFn: fetchProductAll,
     retry: 3,
     retryDelay: 1000,
     placeholderData: (previousData) => previousData,
   });
 
+  useEffect(() => {
+    if (productData) {
+      setProducts(productData);
+    }
+  }, [productData]);
+
   const handleFilterByType = (type) => {
     setSelectedType(type);
     setLimit(6);
   };
+
+  const handleFilterByGender = (gender) => {
+    setSelectedGender(gender);
+    setLimit(6);
+  };
+
+  const fetchProductType = async (type, gender, page, limit) => {
+    setLoading(true);
+    const res = await ProductService.getProductType(type, gender, page, limit);
+    if (res?.status === "OK") {
+      setLoading(false);
+      setProducts(res?.data);
+      setPanigate({ ...panigate, total: res?.totalPage });
+    } else {
+      setLoading(false);
+      console.error(res?.message || "Error fetching products");
+    }
+  };
+
+  const images = [
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTukelZQ3qqo_D-kBj5t1yNbfK1i5D8urVtkA&s",
+    "https://salt.tikicdn.com/cache/100x100/ts/category/00/5d/97/384ca1a678c4ee93a0886a204f47645d.png.webp",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTukelZQ3qqo_D-kBj5t1yNbfK1i5D8urVtkA&s",
+    "https://salt.tikicdn.com/cache/100x100/ts/category/55/5b/80/48cbaafe144c25d5065786ecace86d38.png.webp",
+  ];
+
+  const categories = [
+    {
+      gender: "Nam",
+      items: [
+        { name: "Áo khoác",  },
+        { name: "Áo",  },
+        { name: "Vớ",  },
+        { name: "Balo", },
+      ],
+    },
+    {
+      gender: "Nữ",
+      items: [
+        { name: "Quần",  },
+        { name: "Váy",  },
+        { name: "Túi xách",  },
+      ],
+    },
+  ];
 
   return (
     <Loading isPending={isPending}>
@@ -79,7 +148,7 @@ const HomePage = () => {
               href="#navbar-vertical"
               style={{ height: "65px", marginTop: "-1px", padding: "0 30px" }}
             >
-              <h6 className="m-0">Categories</h6>
+              <h6 className="m-0">Danh mục </h6>
               <i className="fa fa-angle-down text-dark"></i>
             </a>
             <nav
@@ -90,26 +159,25 @@ const HomePage = () => {
                 className="navbar-nav w-100 overflow-hidden"
                 style={{ height: "410px" }}
               >
-                {typeProducts.map((item) => (
-                  <TypeProduct
-                    key={item} // Dùng item làm key
-                    name={item} // Gửi tên loại sản phẩm vào TypeProduct
-                    onClick={() => handleFilterByType(item)} // Gọi hàm lọc khi loại sản phẩm được chọn
-                  />
+                {categories.map((categoryGroup) => (
+                  <div key={categoryGroup.gender} className="mb-4">
+                    {/* Không hiển thị tiêu đề gender */}
+                    {categoryGroup.items.map((category, index) => (
+                      <TypeProduct
+                        key={`${categoryGroup.gender}-${index}`}
+                        name={category.name}
+                        image={category.image}
+                        gender={categoryGroup.gender}
+                      />
+                    ))}
+                  </div>
                 ))}
               </div>
             </nav>
           </div>
+
           <div className="col-lg-9">
             <nav className="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
-              <a href="" className="text-decoration-none d-block d-lg-none">
-                <h1 className="m-0 display-5 font-weight-semi-bold">
-                  <span className="text-primary font-weight-bold border px-3 mr-1">
-                    E
-                  </span>
-                  Shopper
-                </h1>
-              </a>
               <button
                 type="button"
                 className="navbar-toggler"
@@ -124,33 +192,10 @@ const HomePage = () => {
               >
                 <div className="navbar-nav mr-auto py-0">
                   <a href="/" className="nav-item nav-link active">
-                    Home
+                    Trang chủ
                   </a>
                   <a href="/products" className="nav-item nav-link">
-                    Shop
-                  </a>
-                  <a href="detail.html" className="nav-item nav-link">
-                    Shop Detail
-                  </a>
-                  <div className="nav-item dropdown">
-                    <a
-                      href="#"
-                      className="nav-link dropdown-toggle"
-                      data-toggle="dropdown"
-                    >
-                      Pages
-                    </a>
-                    <div className="dropdown-menu rounded-0 m-0">
-                      <a href="cart.html" className="dropdown-item">
-                        Shopping Cart
-                      </a>
-                      <a href="checkout.html" className="dropdown-item">
-                        Checkout
-                      </a>
-                    </div>
-                  </div>
-                  <a href="contact.html" className="nav-item nav-link">
-                    Contact
+                    Sản phẩm
                   </a>
                 </div>
                 <div className="navbar-nav ml-auto py-0">
@@ -193,13 +238,13 @@ const HomePage = () => {
                   <div className="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div className="p-3" style={{ maxWidth: "700px" }}>
                       <h4 className="text-light text-uppercase font-weight-medium mb-3">
-                        10% Off Your First Order
+                        Giảm 10% cho sản phẩm đầu tiên
                       </h4>
                       <h3 className="display-4 text-white font-weight-semi-bold mb-4">
-                        Fashionable Dress
+                        Váy thời trang
                       </h3>
                       <a href="" className="btn btn-light py-2 px-3">
-                        Shop Now
+                        Mua ngay
                       </a>
                     </div>
                   </div>
@@ -213,13 +258,13 @@ const HomePage = () => {
                   <div className="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div className="p-3" style={{ maxWidth: "700px" }}>
                       <h4 className="text-light text-uppercase font-weight-medium mb-3">
-                        10% Off Your First Order
+                        Giảm 20% cho sản phẩm đầu tiên
                       </h4>
                       <h3 className="display-4 text-white font-weight-semi-bold mb-4">
-                        Reasonable Price
+                        Áo thời trang
                       </h3>
                       <a href="" className="btn btn-light py-2 px-3">
-                        Shop Now
+                        Mua ngay
                       </a>
                     </div>
                   </div>
@@ -305,6 +350,7 @@ const HomePage = () => {
               name={product.name}
               price={product.price}
               rating={product.rating}
+              gender={product.gender}
               type={product.type}
               selled={product.selled}
               discount={product.discount}
@@ -321,13 +367,13 @@ const HomePage = () => {
               <img src="img/offer-1.png" alt="" />
               <div className="position-relative" style={{ zIndex: 1 }}>
                 <h5 className="text-uppercase text-primary mb-3">
-                  20% off the all order
+                  Sale 20% cho các sản phẩm
                 </h5>
                 <h1 className="mb-4 font-weight-semi-bold">
-                  Spring Collection
+                  Bộ sưu tập mùa xuân
                 </h1>
                 <a href="" className="btn btn-outline-primary py-md-2 px-md-3">
-                  Shop Now
+                  Mua ngay
                 </a>
               </div>
             </div>
@@ -337,13 +383,13 @@ const HomePage = () => {
               <img src="img/offer-2.png" alt="" />
               <div className="position-relative" style={{ zIndex: 1 }}>
                 <h5 className="text-uppercase text-primary mb-3">
-                  20% off the all order
+                  Sale 20% cho các sản phẩm
                 </h5>
                 <h1 className="mb-4 font-weight-semi-bold">
-                  Winter Collection
+                  Bộ sưu tập mùa đông
                 </h1>
                 <a href="" className="btn btn-outline-primary py-md-2 px-md-3">
-                  Shop Now
+                  Mua ngay
                 </a>
               </div>
             </div>
@@ -355,7 +401,7 @@ const HomePage = () => {
       <div className="container-fluid pt-5">
         <div className="text-center mb-4">
           <h2 className="section-title px-5">
-            <span className="px-2">Trendy Products</span>
+            <span className="px-2">Sản phẩm bán chạy nhất</span>
           </h2>
         </div>
         <div className="row px-xl-5 pb-3">
@@ -382,11 +428,11 @@ const HomePage = () => {
           <div className="col-md-6 col-12 py-5">
             <div className="text-center mb-2 pb-2">
               <h2 className="section-title px-5 mb-3">
-                <span className="bg-secondary px-2">Stay Updated</span>
+                <span className="bg-secondary px-2">Cập nhật mới</span>
               </h2>
               <p>
-                Amet lorem at rebum amet dolores. Elitr lorem dolor sed amet
-                diam labore at justo ipsum eirmod duo labore labore.
+                Hãy nhập mail để nhận được nhưng thông báo mới nhất của website
+                về sản phẩm và sự kiện
               </p>
             </div>
             <form action="">
@@ -394,10 +440,10 @@ const HomePage = () => {
                 <input
                   type="text"
                   className="form-control border-white p-4"
-                  placeholder="Email Goes Here"
+                  placeholder="Nhập Email ở đây"
                 />
                 <div className="input-group-append">
-                  <button className="btn btn-primary px-4">Subscribe</button>
+                  <button className="btn btn-primary px-4">Đăng ký</button>
                 </div>
               </div>
             </form>
@@ -408,7 +454,7 @@ const HomePage = () => {
       <div className="container-fluid pt-5">
         <div className="text-center mb-4">
           <h2 className="section-title px-5">
-            <span className="px-2">Just Arrived</span>
+            <span className="px-2">Các sản phẩm mới</span>
           </h2>
         </div>
         <div className="row px-xl-5 pb-3">
@@ -461,7 +507,6 @@ const HomePage = () => {
         />
       </div>
       <FooterComponent />
-      
     </Loading>
   );
 };

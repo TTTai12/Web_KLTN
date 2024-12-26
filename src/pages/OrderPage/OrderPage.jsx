@@ -24,7 +24,8 @@ const OrderPage = () => {
   const [typeProducts, setTypeProducts] = useState([]);
   const order = useSelector((state) => state.order);
   const user = useSelector((state) => state.user);
-
+  const [limit, setLimit] = useState(6);
+  const [selectedType, setSelectedType] = useState(null);
   const [listChecked, setListChecked] = useState([]);
   const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false);
   const [stateUserDetails, setStateUserDetails] = useState({
@@ -49,14 +50,10 @@ const OrderPage = () => {
   };
 
   const handleChangeCount = (type, idProduct, limited) => {
-    if (type === "increase") {
-      if (!limited) {
-        dispatch(increaseAmount({ idProduct }));
-      }
-    } else {
-      if (!limited) {
-        dispatch(decreaseAmount({ idProduct }));
-      }
+    if (type === "increase" && !limited) {
+      dispatch(increaseAmount({ idProduct }));
+    } else if (type === "decrease" && !limited) {
+      dispatch(decreaseAmount({ idProduct }));
     }
   };
 
@@ -118,25 +115,25 @@ const OrderPage = () => {
     return 0;
   }, [order]);
 
-  // đang lõi code này
-  // const deliveryPriceMemo = useMemo(() => {
-  //   if (priceMemo >= 20000 && priceMemo < 500000) {
-  //     return 10000;
-  //   } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
-  //     return 0;
-  //   } else {
-  //     return 20000;
-  //   }
-  // }, [priceMemo]);
+  //đang lõi code này
   const deliveryPriceMemo = useMemo(() => {
-    if (priceMemo > 200000) {
+    if (priceMemo >= 20000 && priceMemo < 500000) {
       return 10000;
-    } else if (priceMemo === 0) {
+    } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0) {
       return 0;
     } else {
       return 20000;
     }
   }, [priceMemo]);
+  // const deliveryPriceMemo = useMemo(() => {
+  //   if (priceMemo > 200000) {
+  //     return 10000;
+  //   } else if (priceMemo === 0) {
+  //     return 0;
+  //   } else {
+  //     return 20000;
+  //   }
+  // }, [priceMemo]);
 
   const totalPriceMemo = useMemo(() => {
     return (
@@ -202,7 +199,7 @@ const OrderPage = () => {
   const itemsDelivery = [
     {
       title: "20.000 VND",
-      description: "Dưới 200.000 VND",
+      description: "Dưới 300.000 VND",
     },
     {
       title: "10.000 VND",
@@ -213,6 +210,10 @@ const OrderPage = () => {
       description: "Trên 500.000 VND",
     },
   ];
+  const handleFilterByType = (type) => {
+    setSelectedType(type);
+    setLimit(6);
+  };
   return (
     <>
       {/* <!-- NavbarTop Start --> */}
@@ -225,7 +226,7 @@ const OrderPage = () => {
               data-target="#navbar-vertical"
               style={{ height: "65px", marginTop: "-1px", padding: "0 30px" }}
             >
-              <h6 className="m-0">Categories</h6>
+              <h6 className="m-0">Danh mục</h6>
               <i className="fa fa-angle-down text-dark"></i>
             </button>
             <nav
@@ -271,33 +272,10 @@ const OrderPage = () => {
               >
                 <div className="navbar-nav mr-auto py-0">
                   <a href="/" className="nav-item nav-link">
-                    Home
+                    Trang chủ
                   </a>
                   <a href="/products" className="nav-item nav-link active">
-                    Shop
-                  </a>
-                  <a href="detail.html" className="nav-item nav-link">
-                    Shop Detail
-                  </a>
-                  <div className="nav-item dropdown">
-                    <a
-                      href="#"
-                      className="nav-link dropdown-toggle"
-                      data-toggle="dropdown"
-                    >
-                      Pages
-                    </a>
-                    <div className="dropdown-menu rounded-0 m-0">
-                      <a href="cart.html" className="dropdown-item">
-                        Shopping Cart
-                      </a>
-                      <a href="checkout.html" className="dropdown-item">
-                        Checkout
-                      </a>
-                    </div>
-                  </div>
-                  <a href="contact.html" className="nav-item nav-link">
-                    Contact
+                    Sản phẩm
                   </a>
                 </div>
               </div>
@@ -313,14 +291,14 @@ const OrderPage = () => {
           style={{ minHeight: "300px" }}
         >
           <h1 className="font-weight-semi-bold text-uppercase mb-3">
-            Our Shop
+            Fashion Shop
           </h1>
           <div className="d-inline-flex">
             <p className="m-0">
-              <a href="/">Home</a>
+              <a href="/">Trang chủ</a>
             </p>
             <p className="m-0 px-2">-</p>
-            <p className="m-0">Shop</p>
+            <p className="m-0">Đặt hàng</p>
           </div>
         </div>
       </div>
@@ -328,10 +306,24 @@ const OrderPage = () => {
       <div className="container-fluid pt-5">
         <div className="row px-xl-5">
           <div className="col-lg-8 table-responsive mb-5">
+            <StepComponent
+              items={itemsDelivery}
+              current={
+                deliveryPriceMemo === 10000
+                  ? 2
+                  : deliveryPriceMemo === 20000
+                  ? 1
+                  : order.orderItemsSelected.length === 0
+                  ? 0
+                  : 3
+              }
+            />
             <table className="table table-bordered text-center mb-0">
               <thead className="bg-secondary text-dark">
                 <tr>
                   <th>Sản phẩm</th>
+                  <th>Size</th>
+                  <th>Màu sắc</th>
                   <th>Đơn giá</th>
                   <th>Số lượng</th>
                   <th>Thành tiền</th>
@@ -347,9 +339,17 @@ const OrderPage = () => {
                         value={item.product}
                         checked={listChecked.includes(item.product)}
                       />
-                      <img src={item.image} style={{ width: "50px" }} />{" "}
+                      <img
+                        src={item.image} // Hiển thị ảnh đầu tiên trong mảng images
+                        alt={item.name}
+                        style={{ width: "50px" }}
+                      />
                       {item.name}
                     </td>
+                    <td className="align-middle">{item.size}</td>{" "}
+                    {/* Hiển thị size */}
+                    <td className="align-middle">{item.color}</td>{" "}
+                    {/* Hiển thị màu sắc */}
                     <td className="align-middle">{convertPrice(item.price)}</td>
                     <td className="align-middle">
                       <div
@@ -377,19 +377,21 @@ const OrderPage = () => {
                           readOnly
                         />
                         <div className="input-group-btn">
+                          {" "}
                           <button
                             className="btn btn-sm btn-primary btn-plus"
                             onClick={() =>
                               handleChangeCount(
                                 "increase",
                                 item.product,
-                                item.amount === item.countInStock,
-                                item.amount === 1
+                                item.amount === item.countInStock
                               )
                             }
+                            disabled={item.amount >= item.countInStock}
                           >
-                            <i className="fa fa-plus"></i>
-                          </button>
+                            {" "}
+                            <i className="fa fa-plus"></i>{" "}
+                          </button>{" "}
                         </div>
                       </div>
                     </td>

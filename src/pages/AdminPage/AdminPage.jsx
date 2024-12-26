@@ -9,6 +9,9 @@ import AdminMain from "../../components/AdminMain/AdminMain";
 import WebFont from "webfontloader";
 import $ from "jquery"; // Import jQuery
 import "jquery-sparkline"; // Import Sparkline
+import JsVectorMap from "jsvectormap"; // Nếu bạn đã cài đặt qua npm
+
+import AdminReview from "../../components/Adminreview/Adminreview";
 
 const AdminPage = () => {
   const [keySelected, setKeySelected] = useState("");
@@ -21,6 +24,8 @@ const AdminPage = () => {
         return <AdminProduct />;
       case "orders":
         return <OrderAdmin />;
+      case "review":
+        return <AdminReview />;
       case "dashboard":
         return <AdminMain />;
       default:

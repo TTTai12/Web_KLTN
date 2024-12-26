@@ -180,6 +180,18 @@ const logoutUser = async (req, res) => {
         })
     }
 }
+
+// controllers/UserController.js
+
+const getTotalUsers = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    res.status(200).json({ totalUsers });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi khi lấy tổng số người dùng', error });
+  }
+};
+
 module.exports = {
     createUser,
     loginUser,
@@ -189,5 +201,6 @@ module.exports = {
     getDetailsUser,
     refreshToken,
     logoutUser,
-    deleteMany
+    deleteMany,
+    getTotalUsers,
 }

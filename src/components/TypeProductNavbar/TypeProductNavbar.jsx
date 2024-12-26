@@ -1,21 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const TypeProductNavbar = ({ name, image }) => {
+const TypeProductNavbar = ({ name, gender }) => {
   const navigate = useNavigate();
 
-  const handleNavigatetype = (type) => {
-    navigate(
-      `/product/${type
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/ /g, "_")}`,
-      { state: type }
-    );
+  const handleNavigatetype = (type, gender) => {
+    const formattedType = type
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/ /g, "_");
+
+    navigate(`/product/${gender}/${formattedType}`, { state: { type, gender } });
   };
 
   const handleItemClick = () => {
-    handleNavigatetype(name);
+    handleNavigatetype(name, gender);
   };
 
   return (
@@ -24,11 +23,6 @@ const TypeProductNavbar = ({ name, image }) => {
       style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
       onClick={handleItemClick}
     >
-      <img
-        src={image}
-        alt={name}
-        style={{ width: "32px", height: "32px", marginRight: "10px" }}
-      />
       <span style={{ cursor: "pointer" }}>{name}</span>
     </div>
   );
