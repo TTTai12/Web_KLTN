@@ -74,5 +74,5 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
-  "proxy": "https://web-kltn-4zte.onrender.com"
+  "proxy": "https://web-kltn-skon.onrender.com/"
 }
